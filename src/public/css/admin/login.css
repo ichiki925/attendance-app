@@ -12,7 +12,7 @@ body {
 
 .header {
     background-color: black;
-    padding: 1rem 2rem;
+    padding: 20px;
 }
 
 .logo {
@@ -39,7 +39,7 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    font-size: 23px;
+    font-size: 20px;
 }
 
 .form-input {
