@@ -1,0 +1,57 @@
+/* 共通のリセット */
+body,
+h1,
+ul,
+li,
+a {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+}
+
+/* 背景と全体のフォント設定 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* ヘッダーのスタイル */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #000;
+    color: #fff;
+}
+
+/* ロゴ部分 */
+.header-logo h1 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* ナビゲーション */
+.header-nav ul {
+    display: flex;
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.header-nav ul li {
+    display: inline;
+}
+
+.header-nav ul li a {
+    color: #fff;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.header-nav ul li a:hover {
+    color: #aaa;
+}
