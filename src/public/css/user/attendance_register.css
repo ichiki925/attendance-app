@@ -1,0 +1,79 @@
+/* 全体レイアウト */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+
+/* 勤怠画面全体 */
+.attendance {
+    text-align: center;
+    margin: 100px;
+    padding: 20px;
+}
+
+/* 状態ラベル */
+.status-label {
+    display: inline-block;
+    font-size: 1rem;
+    color: #666;
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin-bottom: 20px;
+}
+
+/* 日時表示 */
+.date-time p {
+    font-size: 40px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.date-time h2 {
+    font-size: 70px;
+    color: #000;
+    margin: 0;
+}
+
+/* ボタンアクション */
+.actions {
+    margin-top: 50px;
+}
+
+.actions button {
+    font-size: 30px;
+    padding: 10px 60px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #000;
+    transition: all 0.3s;
+}
+
+
+.actions button:first-of-type {
+    background-color: #000;
+    color: #fff;
+}
+
+.actions button:last-of-type {
+    background-color: #fff;
+    color: #000;
+    border: none;
+}
+
+.actions button:hover {
+    opacity: 0.8;
+}
+
+/* お疲れ様メッセージ */
+.actions p {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 20px 0;
+}

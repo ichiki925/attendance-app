@@ -12,12 +12,12 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 // 一般ユーザー用機能
-Route::middleware(['auth'])->group(function () {
-    Route::post('/attendance', [UserController::class, 'store'])->name('attendance.store');
-    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
-    Route::get('/attendance/{id}', [UserController::class, 'show'])->name('attendance.show');
-    Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('stamp_correction_request.list');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::post('/attendance', [UserController::class, 'store'])->name('attendance.store');
+//     Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
+//     Route::get('/attendance/{id}', [UserController::class, 'show'])->name('attendance.show');
+//     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('stamp_correction_request.list');
+// });
 
 // 管理者用認証
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
@@ -31,3 +31,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
     Route::post('/admin/stamp_correction_request/approve/{id}', [AdminController::class, 'approve'])->name('admin.stamp_correction_request.approve');
 });
+
+
+// 出勤登録画面表示用
+    Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');

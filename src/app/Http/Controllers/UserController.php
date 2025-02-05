@@ -25,4 +25,13 @@ class UserController extends Controller
     {
         return view('stamp_correction_request.list');
     }
+
+
+    // 出勤登録画面表示
+    public function showAttendanceRegister()
+    {
+        $status = 'not_working'; // ダミー状態
+        $time = '08:00'; // 固定の時間
+        return view('user.attendance_register', compact('status', 'time'));
+    }
 }

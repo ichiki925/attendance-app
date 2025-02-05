@@ -1,4 +1,4 @@
-/* 共通のリセット */
+/* 全体リセット */
 body,
 h1,
 ul,
@@ -18,40 +18,48 @@ body {
 }
 
 /* ヘッダーのスタイル */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
+header {
     background-color: #000;
     color: #fff;
+    padding: 10px 20px;
 }
 
-/* ロゴ部分 */
-.header-logo h1 {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-/* ナビゲーション */
-.header-nav ul {
+.container {
     display: flex;
+    align-items: center;
+    /* 垂直方向に中央揃え */
+    justify-content: space-between;
+    /* ロゴとナビゲーションを左右に配置 */
+    width: 100%;
+}
+
+.logo img {
+    height: 35px;
+}
+
+/* ナビゲーションのスタイル */
+nav ul {
+    display: flex;
+    /* フレックスボックスで水平に並べる */
     gap: 20px;
-    list-style-type: none;
+    /* リンク間の間隔 */
     padding: 0;
     margin: 0;
 }
 
-.header-nav ul li {
-    display: inline;
+nav ul li {
+    display: inline-block;
 }
 
-.header-nav ul li a {
+nav ul li a {
     color: #fff;
-    font-size: 16px;
+    font-size: 20px;
     transition: color 0.3s;
+    padding: 5px 10px;
+    /* クリック領域を広げる */
 }
 
-.header-nav ul li a:hover {
+nav ul li a:hover {
     color: #aaa;
+    /* ホバー時の色変更 */
 }
