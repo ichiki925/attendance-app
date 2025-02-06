@@ -16,10 +16,10 @@ class UserController extends Controller
         return view('user.attendance_list');
     }
 
-    public function showAttendance($id)
-    {
-        return view('attendance.detail', compact('id'));
-    }
+    // public function showAttendance($id)
+    // {
+    //     return view('user.attendance_detail', compact('id'));
+    // }
 
     public function applicationIndex()
     {
@@ -33,5 +33,10 @@ class UserController extends Controller
         $status = 'not_working'; // ダミー状態
         $time = '08:00'; // 固定の時間
         return view('user.attendance_register', compact('status', 'time'));
+    }
+    // 勤怠詳細画面表示
+    public function showAttendanceDetail()
+    {
+        return view('user.attendance_detail');
     }
 }
