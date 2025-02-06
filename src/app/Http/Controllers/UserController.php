@@ -39,4 +39,9 @@ class UserController extends Controller
     {
         return view('user.attendance_detail');
     }
+    // 修正承認待ち（応用）
+    public function showAttendanceEdit()
+    {
+        return view('user.attendance_edit');
+    }
 }

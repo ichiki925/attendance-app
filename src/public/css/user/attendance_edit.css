@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    /* margin: 0;
+    padding: 0; */
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.attendance-edit {
+    max-width: 60%;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin: 60px 0;
+}
+
+.vertical-line {
+    width: 5px;
+    height: 30px;
+    background-color: black;
+    margin-right: 10px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.detail-container {
+    background-color: #fff;
+
+    border-radius: 10px;
+}
+
+.attendance-table table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+}
+
+.attendance-table td {
+    text-align: left;
+    padding: 30px 100px;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.attendance-table th {
+    width: 30%;
+    background-color: #fff;
+    font-weight: bold;
+    color: #a7a7a7;
+    border-radius: 10px;
+    text-align: left;
+    padding: 30px 40px;
+    border-bottom: 1px solid #ddd;
+}
+
+table tr:last-child th,
+table tr:last-child td {
+    border-bottom: none;
+}
+
+.date-container {
+    display: flex;
+    gap: 100px;
+}
+
+
+.time-container {
+    display: flex;
+    gap: 50px;
+}
+
+.notice-text {
+    color: #e74c3c;
+    font-size: 16px;
+    float: right;
+}
