@@ -13,7 +13,7 @@ class UserController extends Controller
 
     public function attendanceIndex()
     {
-        return view('attendance.list');
+        return view('user.attendance_list');
     }
 
     public function showAttendance($id)

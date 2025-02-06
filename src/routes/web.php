@@ -35,3 +35,5 @@ Route::middleware(['auth:admin'])->group(function () {
 
 // 出勤登録画面表示用
     Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
+// 勤怠一覧ページのルート
+    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
