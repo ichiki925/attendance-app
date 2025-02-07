@@ -33,9 +33,9 @@ class AdminController extends Controller
     return view('admin.attendance_list', compact('attendances'));
     }
 
-    public function showAttendance($id)
+    public function showAttendanceDetail($id)
     {
-        return view('admin.attendance.detail', compact('id'));
+        return view('admin.attendance_detail', compact('id'));
     }
 
     public function staffIndex()

@@ -101,7 +101,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
-    font-weight: bold;
     box-sizing: border-box;
     text-align: center;
 }
@@ -114,9 +113,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     font-size: 14px;
     box-sizing: border-box;
     resize: none;
-    /* テキストエリアのサイズ変更を無効化 */
     height: 60px;
-    /* テキストエリアの高さ */
 }
 
 .edit-button {

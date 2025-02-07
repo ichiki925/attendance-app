@@ -46,3 +46,5 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
 
 // 管理者用勤怠一覧ページのルート
     Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
+//  管理者用勤怠詳細ページ
+    Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
