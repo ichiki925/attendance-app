@@ -50,3 +50,5 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
     Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
 // 管理者用スタッフ一覧ページのルート
     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
+// 管理者用スタッフ別勤怠一覧
+    Route::get('/admin/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.list');

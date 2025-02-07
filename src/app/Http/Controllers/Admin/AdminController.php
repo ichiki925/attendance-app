@@ -55,7 +55,13 @@ class AdminController extends Controller
 
     public function staffAttendanceIndex($id)
     {
-        return view('admin.attendance.staff', compact('id'));
+        // ダミーデータ
+        $staff = (object)[
+            'id' => $id,
+            'name' => '西 玲奈',
+        ];
+
+        return view('admin.staff_attendance_list', ['staff_name' => $staff->name]);
     }
 
     public function applicationIndex()
