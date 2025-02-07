@@ -23,14 +23,14 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 
 // 管理者用機能
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
-    Route::get('/admin/attendance/{id}', [AdminController::class, 'show'])->name('admin.attendance.show');
-    Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
-    Route::get('/admin/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.detail');
-    Route::get('/admin/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
-    Route::post('/admin/stamp_correction_request/approve/{id}', [AdminController::class, 'approve'])->name('admin.stamp_correction_request.approve');
-});
+// Route::middleware(['auth:admin'])->group(function () {
+//     Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
+//     Route::get('/admin/attendance/{id}', [AdminController::class, 'show'])->name('admin.attendance.show');
+//     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
+//     Route::get('/admin/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.detail');
+//     Route::get('/admin/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
+//     Route::post('/admin/stamp_correction_request/approve/{id}', [AdminController::class, 'approve'])->name('admin.stamp_correction_request.approve');
+// });
 
 
 // 出勤登録画面表示用
@@ -43,3 +43,6 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/attendance/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
 // 申請一覧ページのルート
     Route::get('/application/list', [UserController::class, 'showApplicationList'])->name('application.list');
+
+// 管理者用勤怠一覧ページのルート
+    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');

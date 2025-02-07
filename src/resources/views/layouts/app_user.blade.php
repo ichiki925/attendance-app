@@ -30,7 +30,7 @@
         </div>
     </header>
     <main>
-        @yield('content') {{-- ここに各ページのコンテンツが挿入される --}}
+        @yield('content')
     </main>
 </body>
 </html>

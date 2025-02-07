@@ -6,20 +6,23 @@
     <title>管理者</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
+    @yield('css')
 </head>
 <body>
-    <header class="header">
-        <div class="logo">
-                <img src="{{ asset('images/logo.svg') }}" alt="Logo">
+    <header>
+        <div class="container">
+            <div class="logo">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Logo">
             </div>
-        <nav class="header-nav">
-            <ul>
-                <li><a href="/attendance-list">勤怠一覧</a></li>
-                <li><a href="/staff-list">スタッフ一覧</a></li>
-                <li><a href="/application-list">申請一覧</a></li>
-                <li><a href="/logout">ログアウト</a></li>
-            </ul>
-        </nav>
+            <nav>
+                <ul>
+                    <li><a href="/attendance-list">勤怠一覧</a></li>
+                    <li><a href="/staff-list">スタッフ一覧</a></li>
+                    <li><a href="/application-list">申請一覧</a></li>
+                    <li><a href="/logout">ログアウト</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <main>
