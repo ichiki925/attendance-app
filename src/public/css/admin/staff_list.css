@@ -1,0 +1,90 @@
+.staff_list {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 60px;
+}
+
+.vertical-line {
+    width: 5px;
+    height: 30px;
+    background-color: black;
+    margin-right: 10px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.staff-table tr:last-child td {
+    border-bottom: none;
+}
+
+.detail-link {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+.staff-table thead tr {
+    display: flex;
+    justify-content: center;
+}
+
+.staff-table th {
+    flex: 1;
+    text-align: center;
+    color: #777777;
+    padding: 10px;
+    border-bottom: 2px solid #f4f4f4;
+}
+
+.staff-table tbody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.staff-table tr {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.staff-table td {
+    flex: 1;
+    text-align: center;
+    color: #777777;
+    padding: 10px;
+    border-bottom: 1px solid #f4f4f4;
+}
