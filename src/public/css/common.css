@@ -27,9 +27,7 @@ header {
 .container {
     display: flex;
     align-items: center;
-    /* 垂直方向に中央揃え */
     justify-content: space-between;
-    /* ロゴとナビゲーションを左右に配置 */
     width: 100%;
 }
 
@@ -40,9 +38,7 @@ header {
 /* ナビゲーションのスタイル */
 nav ul {
     display: flex;
-    /* フレックスボックスで水平に並べる */
     gap: 20px;
-    /* リンク間の間隔 */
     padding: 0;
     margin: 0;
 }
@@ -56,10 +52,8 @@ nav ul li a {
     font-size: 20px;
     transition: color 0.3s;
     padding: 5px 10px;
-    /* クリック領域を広げる */
 }
 
 nav ul li a:hover {
     color: #aaa;
-    /* ホバー時の色変更 */
 }

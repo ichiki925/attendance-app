@@ -44,4 +44,11 @@ class UserController extends Controller
     {
         return view('user.attendance_edit');
     }
+    // 申請一覧画面表示
+    public function showApplicationList()
+    {
+        return view('user.application_list');
+    }
+
+
 }
