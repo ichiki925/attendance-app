@@ -76,8 +76,34 @@ class AdminController extends Controller
         return view('admin.application_list', compact('applications'));
     }
 
-    public function approve(Request $request, $id)
+    public function showApplicationDetail($id)
     {
-        // 修正申請承認処理
+        $attendance = (object)[
+            'id' => $id,
+            'name' => '西 伶奈',
+            'year' => '2023',
+            'date' => '6月1日',
+            'start_time' => '09:00',
+            'end_time' => '18:00',
+            'break_start' => '12:00',
+            'break_end' => '13:00',
+            'break2' => null,
+            'note' => '電車遅延のため',
+            'status' => 'pending',
+        ];
+
+        return view('admin.application_approval', compact('attendance'));
     }
+
+    public function approve($id)
+    {
+        // 承認処理を実装
+        return redirect()->route('admin.application.detail', $id)->with('success', '申請を承認しました。');
+    }
+
+
+    // public function approve(Request $request, $id)
+    // {
+    //     // 修正申請承認処理
+    // }
 }
