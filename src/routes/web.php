@@ -52,3 +52,5 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
 // 管理者用スタッフ別勤怠一覧
     Route::get('/admin/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.list');
+// 申請一覧画面
+    Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');

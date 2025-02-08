@@ -66,7 +66,14 @@ class AdminController extends Controller
 
     public function applicationIndex()
     {
-        return view('admin.stamp_correction_request.list');
+        // ダミーデータ
+        $applications = [
+            (object)[ 'status' => '承認待ち', 'name' => '西 伶奈', 'target_date' => '2023/06/01', 'reason' => '遅延のため', 'application_date' => '2023/06/02' ],
+            (object)[ 'status' => '承認待ち', 'name' => '山田 太郎', 'target_date' => '2023/06/01', 'reason' => '遅延のため', 'application_date' => '2023/08/02' ],
+            (object)[ 'status' => '承認待ち', 'name' => '山田 花子', 'target_date' => '2023/06/02', 'reason' => '遅延のため', 'application_date' => '2023/07/02' ],
+        ];
+
+        return view('admin.application_list', compact('applications'));
     }
 
     public function approve(Request $request, $id)
