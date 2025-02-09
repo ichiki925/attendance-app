@@ -12,32 +12,50 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    // 管理者かどうかを判定するメソッド
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    // 一般ユーザーかどうかを判定するメソッド
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+    // staffsテーブルとのリレーション (1対1)
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
+    // attendancesテーブルとのリレーション (1対多)
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    // attendance_requestsテーブルとのリレーション (1対多)
+    public function attendanceRequests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
+    }
+
+
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
