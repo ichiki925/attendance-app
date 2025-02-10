@@ -15,6 +15,7 @@
                 <img src="{{ asset('images/logo.svg') }}" alt="Logo">
             </div>
             <nav>
+                @if (Auth::check())
                 <ul>
                     @if (isset($status) && $status === 'done')
                         <li><a href="/attendance/list">今月の出勤一覧</a></li>
@@ -24,8 +25,16 @@
                         <li><a href="/attendance/list">勤怠一覧</a></li>
                         <li><a href="/stamp_correction_request/list">申請</a></li>
                     @endif
-                    <li><a href="/logout">ログアウト</a></li>
+                    <li>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;">
+                                ログアウト
+                            </button>
+                        </form>
+                    </li>
                 </ul>
+                @endif
             </nav>
         </div>
     </header>

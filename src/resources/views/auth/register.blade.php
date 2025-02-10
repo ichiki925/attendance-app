@@ -21,25 +21,26 @@
     <div class="form-container">
         <h1 class="title">会員登録</h1>
 
-        <form class="form">
+        <form class="form" action="/register" method="post">
+            @csrf
             <div class="form-group">
                 <label class="form-label">名前</label>
-                <input type="text" class="form-input" required>
+                <input type="text" class="form-input" name="name" value="{{ old('name') }}" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>
-                <input type="email" class="form-input" required>
+                <input type="email" class="form-input" name="email" value="{{ old('email') }}" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">パスワード</label>
-                <input type="password" class="form-input" required>
+                <input type="password" class="form-input" name="password" required>
             </div>
 
             <div class="form-group">
                 <label class="form-label">パスワード確認</label>
-                <input type="password" class="form-input" required>
+                <input type="password" class="form-input" name="password_confirmation" required>
             </div>
 
             <button type="submit" class="submit-btn">登録する</button>

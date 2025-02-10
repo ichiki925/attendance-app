@@ -18,19 +18,20 @@
         </div>
     </header>
     <div class="form-container">
-        <form class="login-form">
+        <form class="login-form" action="/login" method="post">
+            @csrf
             <h1 class="login-title">ログイン</h1>
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>
-                <input type="email" class="form-input" required>
+                <input type="email" class="form-input" name="email" value="{{ old('email') }}" required>
             </div>
             <div class="form-group">
                 <label class="form-label">パスワード</label>
-                <input type="password" class="form-input" required>
+                <input type="password" class="form-input" name="password" required>
             </div>
             <button type="submit" class="submit-button">登録する</button>
             <div>
-                <a href="#" class="signup-link">会員登録はこちら</a>
+                <a href="/register" class="signup-link">会員登録はこちら</a>
             </div>
         </form>
     </div>

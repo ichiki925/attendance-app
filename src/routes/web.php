@@ -8,8 +8,14 @@ use App\Http\Controllers\Admin\AdminController;
 
 
 // 一般ユーザー用認証
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+// Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+// Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+
+Route::middleware(['auth', 'redirect.role'])->group(function () {
+    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list'); // 一般ユーザー
+    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list'); // 管理者
+});
+
 
 // 一般ユーザー用機能
 // Route::middleware(['auth'])->group(function () {
@@ -35,8 +41,8 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
 
 // 出勤登録画面表示用
     Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
-// 勤怠一覧ページのルート
-    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
+ // 勤怠一覧ページのルート
+ //  Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
 // 勤怠詳細画面表示用
     Route::get('/attendance/detail', [UserController::class, 'showAttendanceDetail'])->name('attendance.detail');
 // 勤怠編集画面の表示ルート（応用）
@@ -45,7 +51,7 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
     Route::get('/application/list', [UserController::class, 'showApplicationList'])->name('application.list');
 
 // 管理者用勤怠一覧ページのルート
-    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
+    // Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
 //  管理者用勤怠詳細ページ
     Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
 // 管理者用スタッフ一覧ページのルート
