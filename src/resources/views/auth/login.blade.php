@@ -23,11 +23,17 @@
             <h1 class="login-title">ログイン</h1>
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>
-                <input type="email" class="form-input" name="email" value="{{ old('email') }}" required>
+                <input type="text" class="form-input" name="email" value="{{ old('email') }}">
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
             <div class="form-group">
                 <label class="form-label">パスワード</label>
-                <input type="password" class="form-input" name="password" required>
+                <input type="password" class="form-input" name="password">
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
             <button type="submit" class="submit-button">登録する</button>
             <div>

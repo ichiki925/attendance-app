@@ -24,12 +24,12 @@
         <form action="#" method="POST">
             <div class="form-group">
                 <label for="email" class="form-label">メールアドレス</label>
-                <input type="email" id="email" name="email" class="form-input" required>
+                <input type="email" id="email" name="email" class="form-input" >
             </div>
 
             <div class="form-group">
                 <label for="password" class="form-label">パスワード</label>
-                <input type="password" id="password" name="password" class="form-input" required>
+                <input type="password" id="password" name="password" class="form-input" >
             </div>
 
             <button type="submit" class="login-button">管理者ログインする</button>

@@ -25,28 +25,40 @@
             @csrf
             <div class="form-group">
                 <label class="form-label">名前</label>
-                <input type="text" class="form-input" name="name" value="{{ old('name') }}" required>
+                <input type="text" class="form-input" name="name" value="{{ old('name') }}">
+                @error('name')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>
-                <input type="email" class="form-input" name="email" value="{{ old('email') }}" required>
+                <input type="text" class="form-input" name="email" value="{{ old('email') }}">
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label class="form-label">パスワード</label>
-                <input type="password" class="form-input" name="password" required>
+                <input type="password" class="form-input" name="password">
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label class="form-label">パスワード確認</label>
-                <input type="password" class="form-input" name="password_confirmation" required>
+                <input type="password" class="form-input" name="password_confirmation">
+                @error('password_confirmation')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="submit" class="submit-btn">登録する</button>
         </form>
 
-        <a href="#" class="login-link">ログインはこちら</a>
+        <a href="/login" class="login-link">ログインはこちら</a>
     </div>
 </body>
 </html>
