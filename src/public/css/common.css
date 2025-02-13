@@ -3,11 +3,14 @@ body,
 h1,
 ul,
 li,
-a {
+a,
+button {
     margin: 0;
     padding: 0;
     list-style: none;
     text-decoration: none;
+    border: none;
+    background: none;
 }
 
 /* 背景と全体のフォント設定 */
@@ -47,13 +50,18 @@ nav ul li {
     display: inline-block;
 }
 
-nav ul li a {
+nav ul li a,
+nav ul li .logout-button {
     color: #fff;
     font-size: 20px;
     transition: color 0.3s;
     padding: 5px 10px;
+    display: inline-block;
+    cursor: pointer;
 }
 
-nav ul li a:hover {
+/* ホバー時のスタイル */
+nav ul li a:hover,
+nav ul li .logout-button:hover {
     color: #aaa;
 }

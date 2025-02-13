@@ -42,30 +42,40 @@ body {
 /* ボタンアクション */
 .actions {
     margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.actions form {
+    display: inline-block;
 }
 
 .actions button {
+    width: 200px;
     font-size: 30px;
-    padding: 10px 60px;
+    padding: 10px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    background-color: #fff;
-    color: #000;
     transition: all 0.3s;
 }
 
-
-.actions button:first-of-type {
+/* 出勤・退勤ボタン（黒背景・白文字） */
+.actions form input[value="working"]+button,
+.actions form input[value="completed"]+button {
     background-color: #000;
     color: #fff;
 }
 
-.actions button:last-of-type {
+.actions form input[value="on_break"]+button,
+.actions form input[value="working_again"]+button {
     background-color: #fff;
     color: #000;
-    border: none;
+
 }
+
 
 .actions button:hover {
     opacity: 0.8;
@@ -73,7 +83,7 @@ body {
 
 /* お疲れ様メッセージ */
 .actions p {
-    font-size: 1.2rem;
+    font-size: 26px;
     color: #666;
     margin: 20px 0;
 }

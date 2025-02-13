@@ -15,8 +15,9 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
+    Route::post('/attendance/register', [UserController::class, 'storeAttendance'])->name('attendance.store');
 
-    // 🔽 ここにログアウト処理を追加！ 🔽
+
     Route::post('/logout', function () {
         Auth::logout();
         return redirect('/login');

@@ -21,14 +21,14 @@
                         <li><a href="/attendance/list">今月の出勤一覧</a></li>
                         <li><a href="/stamp_correction_request/list">申請一覧</a></li>
                     @else
-                        <li><a href="/attendance">勤怠</a></li>
+                        <li><a href="/attendance/register">勤怠</a></li>
                         <li><a href="/attendance/list">勤怠一覧</a></li>
                         <li><a href="/stamp_correction_request/list">申請</a></li>
                     @endif
                     <li>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                             @csrf
-                            <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;">
+                            <button type="submit" class="logout-button">
                                 ログアウト
                             </button>
                         </form>
