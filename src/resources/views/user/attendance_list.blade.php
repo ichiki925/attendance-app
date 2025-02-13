@@ -1,9 +1,7 @@
-@extends('layouts.app_user') {{-- レイアウトを指定 --}}
+@extends('layouts.app_user')
 
-<!-- タイトル -->
 @section('title','勤怠一覧')
 
-<!-- css読み込み -->
 @section('css')
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month" />
 <link rel="stylesheet" href="{{ asset('/css/user/attendance_list.css') }}">
@@ -15,13 +13,20 @@
         <div class="vertical-line"></div>
         <h1 class="title">勤怠一覧</h1>
     </div>
+    @php
+        use Carbon\Carbon;
+        $current = Carbon::parse($currentMonth);
+        $prevMonth = $current->copy()->subMonth()->format('Y-m');
+        $nextMonth = $current->copy()->addMonth()->format('Y-m');
+    @endphp
     <div class="month-nav">
-        <a href="#" class="prev">← 前月</a>
+        <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}" class="prev">← 前月</a>
         <div class="center-content">
-            <span class="material-symbols-outlined calendar-icon">calendar_month</span>
-            <span class="current-month">2023/06</span>
+            <span class="material-symbols-outlined calendar-icon" id="calendarIcon">calendar_month</span>
+            <span class="current-month" id="selectedMonth">{{ $current->format('Y/m') }}</span>
+            <input type="month" id="monthPicker" value="{{ $currentMonth }}" class="hidden-month-picker">
         </div>
-        <a href="#" class="next">翌月 →</a>
+        <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}" class="next">翌月 →</a>
     </div>
     <div class="table-container">
         <table class="attendance-table">
@@ -36,18 +41,52 @@
                 </tr>
             </thead>
             <tbody>
-                @for ($i = 1; $i <= 30; $i++)
+                @foreach ($attendances as $attendance)
+                @php
+                    $date = \Carbon\Carbon::parse($attendance->date);
+                @endphp
                 <tr>
-                    <td>{{ sprintf('06/%02d', $i) }}({{ ['日', '月', '火', '水', '木', '金', '土'][$i % 7] }})</td>
-                    <td>09:00</td>
-                    <td>18:00</td>
-                    <td>1:00</td>
-                    <td>8:00</td>
-                    <td><a href="/attendance/{{ $i }}" class="detail-link">詳細</a></td>
+                    <td>{{ $date->format('m/d') }}({{ ['日', '月', '火', '水', '木', '金', '土'][$date->dayOfWeek] }})</td>
+                    <td>{{ $attendance->start_time }}</td>
+                    <td>{{ $attendance->end_time ?? '-' }}</td>
+                    <td>{{ $attendance->total_break_time ?? '-' }}</td>
+                    <td>{{ $attendance->total_time ?? '-' }}</td>
+                    <td><a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-link">詳細</a></td>
                 </tr>
-                @endfor
+                @endforeach
             </tbody>
         </table>
     </div>
 </div>
+<script>
+document.getElementById('calendarIcon').addEventListener('click', function(event) {
+    const monthPicker = document.getElementById('monthPicker');
+
+    // アイコンの位置を取得
+    const rect = event.target.getBoundingClientRect();
+
+    // 位置をアイコンの直下に調整
+    monthPicker.style.position = 'absolute';
+    monthPicker.style.left = `${rect.left}px`;
+    monthPicker.style.top = `${rect.bottom + window.scrollY}px`;
+
+    // 一時的に表示してから `showPicker()` を実行
+    monthPicker.style.opacity = '1';
+    monthPicker.style.pointerEvents = 'auto';
+
+    monthPicker.showPicker(); // カレンダーを開く
+});
+
+// 月を選択したときに、表示を変更し、URLを更新
+document.getElementById('monthPicker').addEventListener('change', function() {
+    const selectedMonth = this.value;  // YYYY-MM
+    document.getElementById('selectedMonth').innerText = selectedMonth.replace('-', '/');
+
+    // URLに `month` パラメータを追加
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('month', selectedMonth);
+    window.location.href = currentUrl.toString();
+});
+</script>
+
 @endsection

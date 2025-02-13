@@ -104,22 +104,41 @@ class UserController extends Controller
         return redirect()->route('attendance.register');
     }
 
-
-
-
-
-
-
-
-    public function attendanceIndex()
+    public function attendanceIndex(Request $request)
     {
-        return view('user.attendance_list');
+        // クエリパラメータから年月を取得（なければ現在の月）
+        $monthParam = $request->query('month');
+        $currentMonth = Carbon::hasFormat($monthParam, 'Y-m') ? $monthParam : Carbon::now()->format('Y-m');
+
+        // 日付の範囲を計算
+        $startDate = Carbon::parse($currentMonth)->startOfMonth();
+        $endDate = Carbon::parse($currentMonth)->endOfMonth();
+
+        // ログインユーザーの指定月の勤怠情報を取得
+        $attendances = Attendance::where('user_id', Auth::id())
+            ->whereBetween('date', [$startDate, $endDate])
+            ->with('breaks')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->map(function ($attendance) {
+        $attendance->total_break_time = $attendance->breaks->sum(fn($break) => (float) $break->break_time);
+        return $attendance;
+        });
+
+        return view('user.attendance_list', compact('attendances', 'currentMonth'));
     }
 
-    // public function showAttendance($id)
-    // {
-    //     return view('user.attendance_detail', compact('id'));
-    // }
+    // 勤怠詳細ページ
+    public function attendanceDetail($id)
+    {
+        $attendance = Attendance::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->firstOrFail();
+
+        return view('user.attendance_detail', compact('attendance'));
+    }
+
+
 
     public function applicationIndex()
     {

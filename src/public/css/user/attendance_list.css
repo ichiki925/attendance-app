@@ -123,3 +123,9 @@
 .detail-link:hover {
     text-decoration: underline;
 }
+
+#monthPicker {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}

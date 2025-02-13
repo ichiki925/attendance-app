@@ -13,9 +13,10 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 // 一般ユーザー
 Route::middleware(['auth'])->group(function () {
-    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
     Route::post('/attendance/register', [UserController::class, 'storeAttendance'])->name('attendance.store');
+    Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
+    Route::get('/attendance/{id}', [UserController::class, 'attendanceDetail'])->name('attendance.detail');
 
 
     Route::post('/logout', function () {
