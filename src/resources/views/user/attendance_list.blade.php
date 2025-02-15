@@ -51,7 +51,7 @@
                     <td>{{ $attendance->end_time ?? '-' }}</td>
                     <td>{{ $attendance->total_break_time ?? '-' }}</td>
                     <td>{{ $attendance->total_time ?? '-' }}</td>
-                    <td><a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}" class="detail-link">詳細</a></td>
+                    <td><a href="{{ route('attendance.detail', $attendance->id) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach
             </tbody>

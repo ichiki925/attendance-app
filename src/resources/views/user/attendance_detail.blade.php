@@ -1,9 +1,7 @@
-@extends('layouts.app_user') {{-- レイアウトを指定 --}}
+@extends('layouts.app_user')
 
-<!-- タイトル -->
 @section('title','勤怠詳細')
 
-<!-- css読み込み -->
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/user/attendance_detail.css') }}">
 @endsection
@@ -15,42 +13,67 @@
         <h1 class="title">勤怠詳細</h1>
     </div>
     <div class="detail-container">
+    <form action="{{ route('attendance.update', $attendance->id) }}" method="POST">
+        @csrf
         <table class="detail-table">
             <tr>
                 <th>名前</th>
-                <td colspan="3" class="value">西 伶奈</td>
+                <td class="value"><span class="name-padding">{{ $attendance->user->name }}</span></td>
             </tr>
             <tr>
                 <th>日付</th>
                 <td class="value">
-                    <input type="text" value="2023年">
-                    <input type="text" value="6月1日">
+                    <span class="date-year">{{ \Carbon\Carbon::parse($attendance->date)->year }}年</span>
+                    <span>{{ \Carbon\Carbon::parse($attendance->date)->month }}月{{ \Carbon\Carbon::parse($attendance->date)->day }}日</span>
                 </td>
             </tr>
             <tr>
                 <th>出勤・退勤</th>
                 <td class="value">
-                    <input type="time" value="09:00">
-                    <span class="symbol">～</span>
-                    <input type="time" value="18:00">
+                    <div class="input-group">
+                        <input type="time" name="start_time" value="{{ old('start_time', \Carbon\Carbon::parse($attendance->start_time)->format('H:i')) }}">
+                        <span class="symbol">～</span>
+                        <input type="time" name="end_time" value="{{ old('end_time', $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '') }}">
+                        @if ($errors->has('start_time') || $errors->has('end_time'))
+                            <p class="error-message">出勤時間もしくは退勤時間が不適切な値です</p>
+                        @endif
+                    </div>
                 </td>
             </tr>
-            <tr>
-                <th>休憩</th>
-                <td class="value">
-                    <input type="time" value="12:00">
-                    <span class="symbol">～</span>
-                    <input type="time" value="13:00">
-                </td>
-            </tr>
+            @if ($attendance->breaks->isNotEmpty())
+                @foreach ($attendance->breaks as $break)
+                <tr>
+                    <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
+                    <td class="value">
+                        <div class="input-group">
+                            <input type="time" name="breaks[{{ $loop->index }}][start]" value="{{ old("breaks.{$loop->index}.start", \Carbon\Carbon::parse($break->break_start)->format('H:i')) }}">
+                            <span class="symbol">～</span>
+                            <input type="time" name="breaks[{{ $loop->index }}][end]" value="{{ old("breaks.{$loop->index}.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+                            @if ($errors->has("breaks.{$loop->index}.start") || $errors->has("breaks.{$loop->index}.end"))
+                                <p class="error-message">休憩時間が勤務時間外です</p>
+                            @endif
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <th>休憩</th>
+                    <td class="value">休憩なし</td>
+                </tr>
+            @endif
             <tr>
                 <th>備考</th>
-                <td colspan="3" class="value">
-                    <textarea>電車遅延のため</textarea>
+                <td class="value">
+                    <textarea name="remarks">{{ old('remarks', $attendance->remarks ?? '') }}</textarea>
+                    @error('remarks')
+                        <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </td>
             </tr>
         </table>
+        <button type="submit" class="edit-button">修正</button>
+    </form>
     </div>
-    <button class="edit-button">修正</button>
 </div>
 @endsection

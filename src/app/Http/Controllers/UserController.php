@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use Carbon\Carbon;
+use App\Http\Requests\AttendanceRequest;
 
 class UserController extends Controller
 {
@@ -121,9 +122,36 @@ class UserController extends Controller
             ->orderBy('date', 'asc')
             ->get()
             ->map(function ($attendance) {
-        $attendance->total_break_time = $attendance->breaks->sum(fn($break) => (float) $break->break_time);
-        return $attendance;
-        });
+                // 休憩時間を合計（数値変換後）
+                $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
+                    if ($break->break_time) {
+                        list($hours, $minutes, $seconds) = explode(':', $break->break_time);
+                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                    }
+                    return 0;
+                });
+
+                // 勤務時間の計算
+                if ($attendance->start_time && $attendance->end_time) {
+                    $startTime = Carbon::parse($attendance->start_time);
+                    $endTime = Carbon::parse($attendance->end_time);
+                    $workDurationSeconds = $endTime->diffInSeconds($startTime); // 出勤時間の合計（秒）
+
+                    // 休憩時間を引く
+                    $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
+
+                    // `H:i:s` に変換
+                    $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+                } else {
+                    $attendance->total_time = '-';
+                }
+
+                // 休憩時間 `H:i:s` に変換
+                $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
+
+                return $attendance;
+            });
+
 
         return view('user.attendance_list', compact('attendances', 'currentMonth'));
     }
@@ -133,35 +161,76 @@ class UserController extends Controller
     {
         $attendance = Attendance::where('user_id', Auth::id())
             ->where('id', $id)
+            ->with('breaks')
             ->firstOrFail();
 
         return view('user.attendance_detail', compact('attendance'));
     }
 
-
-
-    public function applicationIndex()
+    public function updateAttendance(AttendanceRequest $request, $id)
     {
-        return view('stamp_correction_request.list');
+        $attendance = Attendance::where('user_id', Auth::id())
+            ->where('id', $id)
+            ->with('breaks')
+            ->firstOrFail();
+
+        // バリデーション
+        $request->validate([
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'nullable|date_format:H:i|after:start_time',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+        // 勤務時間の更新
+        $attendance->start_time = $request->input('start_time');
+        $attendance->end_time = $request->input('end_time');
+        $attendance->remarks = $request->input('remarks');
+        $attendance->save();
+
+        // 既存の休憩データを削除（新しいデータで上書き）
+        $attendance->breaks()->delete();
+
+        // 新しい休憩データを保存
+        if ($request->has('breaks')) {
+            foreach ($request->input('breaks') as $breakData) {
+                if (!empty($breakData['start']) && !empty($breakData['end'])) {
+                    $attendance->breaks()->create([
+                        'break_start' => $breakData['start'],
+                        'break_end' => $breakData['end'],
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('attendance.detail', $id)->with('success', '勤怠情報を更新しました。');
     }
 
 
 
-    // 勤怠詳細画面表示
-    public function showAttendanceDetail()
-    {
-        return view('user.attendance_detail');
-    }
-    // 修正承認待ち（応用）
-    public function showAttendanceEdit()
-    {
-        return view('user.attendance_edit');
-    }
-    // 申請一覧画面表示
-    public function showApplicationList()
-    {
-        return view('user.application_list');
-    }
+
+
+
+    // public function applicationIndex()
+    // {
+    //     return view('stamp_correction_request.list');
+    // }
+
+
+
+    // // 勤怠詳細画面表示
+    // public function showAttendanceDetail()
+    // {
+    //     return view('user.attendance_detail');
+    // }
+    // // 修正承認待ち（応用）
+    // public function showAttendanceEdit()
+    // {
+    //     return view('user.attendance_edit');
+    // }
+    // // 申請一覧画面表示
+    // public function showApplicationList()
+    // {
+    //     return view('user.application_list');
+    // }
 
 
 }

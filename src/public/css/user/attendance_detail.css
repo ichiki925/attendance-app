@@ -68,11 +68,21 @@ body {
     gap: 50px;
 }
 
-.detail-table input[type="text"] {
+.name-padding {
+    padding-left: 15px;
+}
+
+.date-year {
+    padding-left: 15px;
+    padding-right: 95px;
+    display: inline-block;
+}
+
+/* .detail-table input[type="text"] {
     width: 80px;
     text-align: center;
     margin-right: 65px;
-}
+} */
 
 
 .detail-table input[type="time"] {
@@ -132,4 +142,19 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .edit-button:hover {
     background-color: #444;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* 入力欄とメッセージの間隔 */
+    position: relative;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-left: 10px;
+    white-space: nowrap;
 }

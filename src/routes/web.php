@@ -17,6 +17,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/attendance/register', [UserController::class, 'storeAttendance'])->name('attendance.store');
     Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/{id}', [UserController::class, 'attendanceDetail'])->name('attendance.detail');
+    Route::get('/attendance/{id}/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
+    Route::post('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
+    Route::post('/attendance/request/{id}', [UserController::class, 'requestCorrection'])->name('attendance.request');
+    Route::get('/stamp_correction_request/list', [UserController::class, 'showApplicationList'])->name('application.list');
+
 
 
     Route::post('/logout', function () {
@@ -48,16 +53,10 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
 // });
 
 
-// 出勤登録画面表示用
-    // Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
- // 勤怠一覧ページのルート
- //  Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
-// 勤怠詳細画面表示用
-    Route::get('/attendance/detail', [UserController::class, 'showAttendanceDetail'])->name('attendance.detail');
-// 勤怠編集画面の表示ルート（応用）
-    Route::get('/attendance/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
-// 申請一覧ページのルート
-    Route::get('/application/list', [UserController::class, 'showApplicationList'])->name('application.list');
+
+
+// // 申請一覧ページのルート
+//     Route::get('/application/list', [UserController::class, 'showApplicationList'])->name('application.list');
 
 // 管理者用勤怠一覧ページのルート
     // Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
