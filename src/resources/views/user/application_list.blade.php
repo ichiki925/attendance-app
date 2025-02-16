@@ -1,9 +1,7 @@
-@extends('layouts.app_user') {{-- レイアウトを指定 --}}
+@extends('layouts.app_user')
 
-<!-- タイトル -->
 @section('title','申請一覧')
 
-<!-- CSS読み込み -->
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/user/application_list.css') }}">
 @endsection
@@ -31,23 +29,15 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach($applications as $application)
                 <tr>
-                    <td>承認待ち</td>
-                    <td>西 伶奈</td>
-                    <td>2023/06/01</td>
-                    <td>遅延のため</td>
-                    <td>2023/06/02</td>
-                    <td><a href="#" class="detail-link">詳細</a></td>
+                    <td>{{ $application->request_status == 'pending' ? '承認待ち' : '承認済み' }}</td>
+                    <td>{{ $application->attendance->date }}</td>
+                    <td>{{ $application->reason }}</td>
+                    <td>{{ $application->requested_at->format('Y/m/d H:i') }}</td>
+                    <td><a href="{{ route('applications.show', $application->id) }}" class="detail-link">詳細</a></td>
                 </tr>
-                <!-- 以降はダミーデータとして複数行追加 -->
-                <tr>
-                    <td>承認済み</td>
-                    <td>西 伶奈</td>
-                    <td>2023/06/01</td>
-                    <td>遅延のため</td>
-                    <td>2023/06/02</td>
-                    <td><a href="#" class="detail-link">詳細</a></td>
-                </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

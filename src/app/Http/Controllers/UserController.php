@@ -204,33 +204,40 @@ class UserController extends Controller
         return redirect()->route('attendance.detail', $id)->with('success', '勤怠情報を更新しました。');
     }
 
+    public function applicationIndex()
+    {
+        $user = Auth::user();
+
+        // ログインユーザーの申請データ取得
+        $applications = AttendanceRequest::where('user_id', $user->id)
+            ->orderBy('requested_at', 'desc')
+            ->get();
+
+        return view('user.application_list', compact('applications'));
+    }
+
+    public function applicationShow($id)
+    {
+        $user = Auth::user();
+
+        // ログインユーザーが作成した申請のみ取得
+        $application = AttendanceRequest::where('user_id', $user->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+        return view('user.application_detail', compact('application'));
+    }
 
 
 
 
 
-    // public function applicationIndex()
-    // {
-    //     return view('stamp_correction_request.list');
-    // }
 
 
 
-    // // 勤怠詳細画面表示
-    // public function showAttendanceDetail()
-    // {
-    //     return view('user.attendance_detail');
-    // }
-    // // 修正承認待ち（応用）
-    // public function showAttendanceEdit()
-    // {
-    //     return view('user.attendance_edit');
-    // }
-    // // 申請一覧画面表示
-    // public function showApplicationList()
-    // {
-    //     return view('user.application_list');
-    // }
+
+
+
 
 
 }

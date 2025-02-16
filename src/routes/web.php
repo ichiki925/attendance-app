@@ -19,8 +19,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/{id}', [UserController::class, 'attendanceDetail'])->name('attendance.detail');
     Route::get('/attendance/{id}/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
     Route::post('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
-    Route::post('/attendance/request/{id}', [UserController::class, 'requestCorrection'])->name('attendance.request');
-    Route::get('/stamp_correction_request/list', [UserController::class, 'showApplicationList'])->name('application.list');
+    // Route::post('/attendance/request/{id}', [UserController::class, 'requestCorrection'])->name('attendance.request');
+    Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
+    Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
+
 
 
 

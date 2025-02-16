@@ -78,13 +78,6 @@ body {
     display: inline-block;
 }
 
-/* .detail-table input[type="text"] {
-    width: 80px;
-    text-align: center;
-    margin-right: 65px;
-} */
-
-
 .detail-table input[type="time"] {
     width: 80px;
     flex-shrink: 0;
@@ -104,7 +97,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     color: #555;
 }
 
-/* 入力フィールドのスタイル */
 .detail-table input {
     width: 50%;
     padding: 6px;
@@ -148,7 +140,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     display: flex;
     align-items: center;
     gap: 10px;
-    /* 入力欄とメッセージの間隔 */
     position: relative;
 }
 
@@ -156,5 +147,18 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     color: red;
     font-size: 12px;
     margin-left: 10px;
+    margin-bottom: 0;
     white-space: nowrap;
+}
+
+@media (min-width:768px) and (max-width:850px) {
+
+    .attendance-detail {
+        max-width: 70%;
+        margin: 0 auto;
+    }
+
+    .detail-table textarea {
+        width: 80%;
+        }
 }
