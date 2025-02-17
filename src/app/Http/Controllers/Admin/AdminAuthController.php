@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 
 class AdminAuthController extends Controller
 {
@@ -29,7 +31,8 @@ class AdminAuthController extends Controller
             ]);
         }
 
-        if (!$user->isAdmin()) {
+        // 管理者でなければログインさせない
+        if ($user->role !== 'admin') {
             throw ValidationException::withMessages([
                 'email' => '管理者権限がありません',
             ]);

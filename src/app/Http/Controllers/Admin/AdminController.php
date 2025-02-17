@@ -4,38 +4,53 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Attendance;
+use App\Models\User;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function attendanceIndex()
+    public function attendanceIndex(Request $request)
     {
-        // ダミーデータを用意
-    $attendances = [
-        (object)[
-            'id' => 1,
-            'name' => '山田 太郎',
-            'start_time' => '09:00',
-            'end_time' => '18:00',
-            'break_time' => '1:00',
-            'total_time' => '8:00',
-        ],
-        (object)[
-            'id' => 2,
-            'name' => '西 玲奈',
-            'start_time' => '09:00',
-            'end_time' => '18:00',
-            'break_time' => '1:00',
-            'total_time' => '8:00',
-        ],
-    ];
+        $selectedDate = $request->query('date', now()->toDateString());
 
-    // ビューにデータを渡す
-    return view('admin.attendance_list', compact('attendances'));
+        // 指定された日付の勤怠データを取得
+        $attendances = Attendance::where('date', $selectedDate)
+            ->whereHas('user', function ($query) {
+                $query->where('role', '!=', 'admin'); // 管理者を除外
+            })
+            ->with('user', 'breaks')
+            ->orderBy('start_time', 'asc')
+            ->get()
+            ->map(function ($attendance) {
+            // 休憩時間の合計を計算
+            $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
+                return strtotime($break->break_time) - strtotime('00:00:00');
+            });
+
+            // 勤務時間を計算（休憩時間を引く）
+            if ($attendance->start_time && $attendance->end_time) {
+                $workDurationSeconds = strtotime($attendance->end_time) - strtotime($attendance->start_time);
+                $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
+
+                $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+            } else {
+                $attendance->total_time = '-';
+            }
+
+            $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
+
+            return $attendance;
+        });
+
+
+        return view('admin.attendance_list', compact('attendances', 'selectedDate'));
     }
 
     public function showAttendanceDetail($id)
     {
-        return view('admin.attendance_detail', compact('id'));
+        $attendance = Attendance::with(['user', 'breaks'])->findOrFail($id);
+        return view('admin.attendance_detail', compact('attendance'));
     }
 
     public function staffIndex()

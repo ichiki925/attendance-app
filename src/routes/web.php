@@ -39,10 +39,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // 管理者 (認証 + ミドルウェア)
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/attendance/list', [AdminController::class, 'attendanceIndex'])->name('attendance.list');
+    Route::get('/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('attendance.detail');
 
-    Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 
 
