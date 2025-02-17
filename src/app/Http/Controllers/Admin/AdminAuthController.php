@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\LoginRequest;
+use App\Models\User;
 
 class AdminAuthController extends Controller
 {
@@ -20,17 +21,22 @@ class AdminAuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
+        $user = User::where('email', $credentials['email'])->first();
 
-        // 認証試行
-        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('/admin/dashboard');
+        if (!$user || !\Hash::check($credentials['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => 'ログイン情報が登録されていません',
+            ]);
         }
 
-        // 認証失敗時の処理
-        throw ValidationException::withMessages([
-            'email' => ['提供された認証情報は記録と一致しません。'],
-        ]);
+        if (!$user->isAdmin()) {
+            throw ValidationException::withMessages([
+                'email' => '管理者権限がありません',
+            ]);
+        }
+
+        Auth::guard('admin')->login($user);
+        return redirect()->route('admin.dashboard');
     }
 
     // ログアウト処理を行うメソッド

@@ -34,6 +34,7 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
     // staffsテーブルとのリレーション (1対1)
     public function staff()
     {
