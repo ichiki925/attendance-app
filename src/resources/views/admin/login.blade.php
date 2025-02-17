@@ -21,15 +21,22 @@
     <main class="form-container">
         <h1 class="login-title">管理者ログイン</h1>
 
-        <form action="#" method="POST">
+        <form action="{{ url('/admin/login') }}" method="POST" novalidate>
+            @csrf
             <div class="form-group">
                 <label for="email" class="form-label">メールアドレス</label>
                 <input type="email" id="email" name="email" class="form-input" >
+                @error('email')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">
                 <label for="password" class="form-label">パスワード</label>
                 <input type="password" id="password" name="password" class="form-input" >
+                @error('password')
+                    <div class="error">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="submit" class="login-button">管理者ログインする</button>

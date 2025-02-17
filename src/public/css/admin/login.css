@@ -65,3 +65,24 @@ body {
 .login-button:hover {
     opacity: 0.9;
 }
+
+.error {
+    color: red;
+}
+
+@media (min-width: 768px) and (max-width: 850px) {
+    .header {
+        height: 50px;
+        padding: 10px;
+    }
+
+    .logo {
+        height: 14px;
+    }
+
+    .form-container {
+        max-width: 70%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+}

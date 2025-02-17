@@ -1,15 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])
+        ->middleware('guest:admin')
+        ->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])
+        ->middleware('guest:admin');
+    // 他の管理者用ルート
+});
 
-// 一般ユーザー用認証
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 // 一般ユーザー
 Route::middleware(['auth'])->group(function () {
@@ -19,28 +25,37 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/{id}', [UserController::class, 'attendanceDetail'])->name('attendance.detail');
     Route::get('/attendance/{id}/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
     Route::post('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
-    // Route::post('/attendance/request/{id}', [UserController::class, 'requestCorrection'])->name('attendance.request');
     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
 
 
 
-
-    Route::post('/logout', function () {
+    Route::post('/logout', function (Request $request) {
         Auth::logout();
-        return redirect('/login');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login'); // 一般ユーザーは `/login` にリダイレクト
     })->name('logout');
 });
 
-// 管理者
-Route::middleware(['auth', 'redirect.role'])->group(function () {
+// 管理者 (認証 + ミドルウェア)
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
+
+
+
+    Route::post('/admin/logout', function (Request $request) {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/admin/login'); // 管理者は `/admin/login` にリダイレクト
+    })->name('admin.logout');
 });
 
 
 
 // 管理者用認証
-Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+// Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 
 
 
@@ -57,11 +72,7 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
 
 
 
-// // 申請一覧ページのルート
-//     Route::get('/application/list', [UserController::class, 'showApplicationList'])->name('application.list');
 
-// 管理者用勤怠一覧ページのルート
-    // Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
 //  管理者用勤怠詳細ページ
     Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
 // 管理者用スタッフ一覧ページのルート

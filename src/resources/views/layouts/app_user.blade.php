@@ -15,7 +15,7 @@
                 <img src="{{ asset('images/logo.svg') }}" alt="Logo">
             </div>
             <nav>
-                @if (Auth::check())
+                @if (Auth::check() && Auth::user()->role === 'user')
                 <ul>
                     @if (isset($status) && $status === 'done')
                         <li><a href="/attendance/list">今月の出勤一覧</a></li>

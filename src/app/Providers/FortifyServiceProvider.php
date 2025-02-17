@@ -7,6 +7,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Requests\LoginRequest;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -51,9 +52,12 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
-
         Fortify::loginView(function () {
             return view('auth.login');
+        });
+
+        Fortify::loginView(function () {
+            return request()->is('admin/*') ? view('admin.login') : view('auth.login');
         });
 
         RateLimiter::for('login', function (Request $request) {
@@ -62,18 +66,54 @@ class FortifyServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($throttleKey);
         });
 
+        Fortify::redirects('login', function () {
+            $user = Auth::user();
+            if (!$user) {
+                return '/login';
+            }
+            return $user->role === 'admin'
+                ? '/admin/attendance/list'
+                : '/attendance/register';
+        });
+
 
 
         Fortify::authenticateUsing(function (LoginRequest $request) {
             $credentials = $request->only('email', 'password');
 
-            if (!Auth::attempt($credentials)) {
+            // ユーザー検索
+            $user = User::where('email', $credentials['email'])->first();
+
+            // ユーザーが存在し、パスワードが一致するか確認
+            if (!$user || !Hash::check($credentials['password'], $user->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['ログイン情報が登録されていません。'],
                 ]);
             }
+            if ($request->is('admin/*') && $user->role !== 'admin') {
+                throw ValidationException::withMessages([
+                    'email' => ['管理者権限がありません。'],
+                ]);
+            }
 
-            return Auth::user();
+            // **管理者ログインかどうかをURLで判定**
+            // if ($request->is('admin/*')) {
+
+            //     if ($user->role !== 'admin') {
+            //         throw ValidationException::withMessages([
+            //             'email' => ['管理者権限がありません。'],
+            //         ]);
+            //     }
+            // } else {
+
+            //     if ($user->role !== 'user') {
+            //         throw ValidationException::withMessages([
+            //             'email' => ['一般ユーザーのログイン画面からは管理者としてログインできません。'],
+            //         ]);
+            //     }
+            // }
+
+            return $user;
         });
     }
 }

@@ -15,12 +15,19 @@
                     <img src="{{ asset('images/logo.svg') }}" alt="Logo">
             </div>
             <nav>
+                @if (Auth::check() && Auth::user()->role === 'admin')
                 <ul>
                     <li><a href="/attendance-list">勤怠一覧</a></li>
                     <li><a href="/staff-list">スタッフ一覧</a></li>
                     <li><a href="/application-list">申請一覧</a></li>
-                    <li><a href="/logout">ログアウト</a></li>
+                    <li>
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="logout-button">ログアウト</button>
+                        </form>
+                    </li>
                 </ul>
+                @endif
             </nav>
         </div>
     </header>
