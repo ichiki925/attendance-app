@@ -42,14 +42,11 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
 
+    Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 
-    Route::post('/admin/logout', function (Request $request) {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/admin/login'); // 管理者は `/admin/login` にリダイレクト
-    })->name('admin.logout');
+
+
 });
 
 

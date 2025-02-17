@@ -95,24 +95,6 @@ class FortifyServiceProvider extends ServiceProvider
                     'email' => ['管理者権限がありません。'],
                 ]);
             }
-
-            // **管理者ログインかどうかをURLで判定**
-            // if ($request->is('admin/*')) {
-
-            //     if ($user->role !== 'admin') {
-            //         throw ValidationException::withMessages([
-            //             'email' => ['管理者権限がありません。'],
-            //         ]);
-            //     }
-            // } else {
-
-            //     if ($user->role !== 'user') {
-            //         throw ValidationException::withMessages([
-            //             'email' => ['一般ユーザーのログイン画面からは管理者としてログインできません。'],
-            //         ]);
-            //     }
-            // }
-
             return $user;
         });
     }

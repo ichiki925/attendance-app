@@ -35,8 +35,8 @@ class AdminAuthController extends Controller
             ]);
         }
 
-        Auth::guard('admin')->login($user);
-        return redirect()->route('admin.dashboard');
+        Auth::login($user);
+        return redirect()->route('admin.attendance.list');
     }
 
     // ログアウト処理を行うメソッド
