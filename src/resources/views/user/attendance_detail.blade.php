@@ -15,6 +15,8 @@
     <div class="detail-container">
     <form action="{{ route('attendance.update', $attendance->id) }}" method="POST">
         @csrf
+        @method('PUT')
+
         <table class="detail-table">
             <tr>
                 <th>名前</th>
@@ -36,36 +38,48 @@
                         <input type="time" name="end_time" value="{{ old('end_time', $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '') }}">
                     </div>
                         @if ($errors->has('start_time') || $errors->has('end_time'))
-                        <div class="error-container">
-                            <p class="error-message">出勤時間もしくは退勤時間が不適切な値です</p>
-                        </div>
+                            <div class="error-container">
+                                <p class="error-message">
+                                    {{ $errors->first('start_time') ?? $errors->first('end_time') }}
+                                </p>
+                            </div>
                         @endif
                 </td>
             </tr>
-            @if ($attendance->breaks->isNotEmpty())
-                @foreach ($attendance->breaks as $break)
+                @php $breakIndex = 0; @endphp
+                @foreach ($attendance->breaks as $breakIndex => $break)
                 <tr>
-                    <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
+                    <th>{{ $breakIndex === 0 ? '休憩' : '休憩' . ($breakIndex + 1) }}</th>
                     <td>
                         <div class="value">
-                            <input type="time" name="breaks[{{ $loop->index }}][start]" value="{{ old("breaks.{$loop->index}.start", \Carbon\Carbon::parse($break->break_start)->format('H:i')) }}">
+                            <input type="time" name="breaks[{{ $breakIndex }}][start]"
+                                value="{{ old("breaks.$breakIndex.start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
                             <span class="symbol">～</span>
-                            <input type="time" name="breaks[{{ $loop->index }}][end]" value="{{ old("breaks.{$loop->index}.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+                            <input type="time" name="breaks[{{ $breakIndex }}][end]"
+                                value="{{ old("breaks.$breakIndex.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
                         </div>
-                            @if ($errors->has("breaks.{$loop->index}.start") || $errors->has("breaks.{$loop->index}.end"))
-                            <div class="error-container">
-                                <p class="error-message">休憩時間が勤務時間外です</p>
-                            </div>
+                            @if ($errors->has("breaks.$breakIndex.start") || $errors->has("breaks.$breakIndex.end"))
+                                <div class="error-container">
+                                    <p class="error-message">
+                                        {{ $errors->first("breaks.$breakIndex.start") ?? $errors->first("breaks.$breakIndex.end") }}
+                                    </p>
+                                </div>
                             @endif
                     </td>
                 </tr>
                 @endforeach
-            @else
-                <tr>
-                    <th>休憩</th>
-                    <td class="value">休憩なし</td>
-                </tr>
-            @endif
+            <tr>
+                <th>休憩{{ count($attendance->breaks) + 1 }}</th>
+                <td>
+                    <div class="value">
+                        <input type="time" name="breaks[{{ count($attendance->breaks) }}][start]"
+                            value="{{ old("breaks." . count($attendance->breaks) . ".start", '') }}">
+                        <span class="symbol">～</span>
+                        <input type="time" name="breaks[{{ count($attendance->breaks) }}][end]"
+                            value="{{ old("breaks." . count($attendance->breaks) . ".end", '') }}">
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <th>備考</th>
                 <td>

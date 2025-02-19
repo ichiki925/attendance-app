@@ -31,7 +31,11 @@ class AttendanceRequest extends FormRequest
             'start_time.before' => '出勤時間もしくは退勤時間が不適切な値です',
             'end_time.after' => '出勤時間もしくは退勤時間が不適切な値です',
             'breaks.*.start.before_or_equal' => '休憩時間が勤務時間外です',
+            'breaks.*.start.date_format' => '休憩開始時間の形式が不正です',
+            'breaks.*.start.before' => '休憩の開始時間は終了時間より前に設定してください',
             'breaks.*.end.before_or_equal' => '休憩時間が勤務時間外です',
+            'breaks.*.end.date_format' => '休憩終了時間の形式が不正です',
+            'breaks.*.end.after' => '休憩の終了時間は開始時間より後に設定してください',
             'remarks.required' => '備考を記入してください',
         ];
     }

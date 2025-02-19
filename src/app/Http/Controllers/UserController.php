@@ -169,17 +169,14 @@ class UserController extends Controller
 
     public function updateAttendance(AttendanceRequest $request, $id)
     {
+        // 管理者にもこれ追加
+        $validated = $request->validated();
+
         $attendance = Attendance::where('user_id', Auth::id())
             ->where('id', $id)
             ->with('breaks')
             ->firstOrFail();
 
-        // バリデーション
-        $request->validate([
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after:start_time',
-            'remarks' => 'nullable|string|max:255',
-        ]);
         // 勤務時間の更新
         $attendance->start_time = $request->input('start_time');
         $attendance->end_time = $request->input('end_time');
@@ -190,12 +187,14 @@ class UserController extends Controller
         $attendance->breaks()->delete();
 
         // 新しい休憩データを保存
-        if ($request->has('breaks')) {
-            foreach ($request->input('breaks') as $breakData) {
-                if (!empty($breakData['start']) && !empty($breakData['end'])) {
-                    $attendance->breaks()->create([
-                        'break_start' => $breakData['start'],
-                        'break_end' => $breakData['end'],
+        if (!empty($validated['breaks'])) {
+            foreach ($validated['breaks'] as $break) {
+                if (!empty($break['start']) && !empty($break['end'])) {
+                    BreakTime::create([
+                        'attendance_id' => $attendance->id,
+                        'break_start' => $break['start'],
+                        'break_end' => $break['end'],
+                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])), // 休憩時間を計算
                     ]);
                 }
             }

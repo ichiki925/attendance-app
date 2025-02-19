@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminAuthController;
@@ -24,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/{id}', [UserController::class, 'attendanceDetail'])->name('attendance.detail');
     Route::get('/attendance/{id}/edit', [UserController::class, 'showAttendanceEdit'])->name('attendance.edit');
-    Route::post('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
+    Route::put('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
 
@@ -42,6 +43,8 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/attendance/list', [AdminController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('attendance.detail');
+    Route::put('/attendance/{id}', [AdminController::class, 'updateAttendance'])->name('attendance.update');
+
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
@@ -52,15 +55,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 
-// 管理者用認証
-// Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 
 
 
-// 管理者用機能
-// Route::middleware(['auth:admin'])->group(function () {
-//     Route::get('/admin/attendance/list', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.list');
-//     Route::get('/admin/attendance/{id}', [AdminController::class, 'show'])->name('admin.attendance.show');
+
 //     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
 //     Route::get('/admin/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.detail');
 //     Route::get('/admin/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
@@ -72,7 +70,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 //  管理者用勤怠詳細ページ
-    Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
+    // Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
 // 管理者用スタッフ一覧ページのルート
     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
 // 管理者用スタッフ別勤怠一覧

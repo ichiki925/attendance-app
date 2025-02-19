@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\BreakTime;
 use App\Models\User;
+use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -52,6 +55,42 @@ class AdminController extends Controller
         $attendance = Attendance::with(['user', 'breaks'])->findOrFail($id);
         return view('admin.attendance_detail', compact('attendance'));
     }
+
+
+    public function updateAttendance(AttendanceRequest $request, $id)
+    {
+        $validated = $request->validated();
+
+        // 該当の勤怠データを取得
+        $attendance = Attendance::with('breaks')->findOrFail($id);
+
+        // 勤務時間 & 備考の更新
+        $attendance->start_time = $validated['start_time'];
+        $attendance->end_time = $validated['end_time'] ?? null;
+        $attendance->remarks = $validated['remarks'] ?? null;
+        $attendance->save();
+
+        // 既存の休憩データを削除（新しいデータで上書き）
+        $attendance->breaks()->delete();
+
+        // 新しい休憩データを保存
+        if (!empty($validated['breaks'])) {
+            foreach ($validated['breaks'] as $break) {
+                if (!empty($break['start']) && !empty($break['end'])) {
+                    BreakTime::create([
+                        'attendance_id' => $attendance->id,
+                        'break_start' => $break['start'],
+                        'break_end' => $break['end'],
+                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])), // 休憩時間を計算
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('admin.attendance.detail', $id)
+                        ->with('success', '勤怠情報を更新しました。');
+    }
+
 
     public function staffIndex()
     {

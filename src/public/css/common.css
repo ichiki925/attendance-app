@@ -65,3 +65,16 @@ nav ul li a:hover,
 nav ul li .logout-button:hover {
     color: #aaa;
 }
+
+@media (min-width: 768px) and (max-width: 850px) {
+    nav ul {
+        display: flex;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+    }
+    nav ul li a,
+    nav ul li .logout-button {
+        font-size: 14px;
+    }
+}
