@@ -44,6 +44,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/attendance/list', [AdminController::class, 'attendanceIndex'])->name('attendance.list');
     Route::get('/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::put('/attendance/{id}', [AdminController::class, 'updateAttendance'])->name('attendance.update');
+    Route::get('/staff/list', [AdminController::class, 'staffIndex'])->name('staff.list');
+    Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('staff.attendance.list');
+    Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportAttendance'])
+    ->name('attendance.export');
 
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
@@ -59,22 +63,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 
-//     Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
-//     Route::get('/admin/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.detail');
-//     Route::get('/admin/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
-//     Route::post('/admin/stamp_correction_request/approve/{id}', [AdminController::class, 'approve'])->name('admin.stamp_correction_request.approve');
-// });
 
 
 
 
 
-//  管理者用勤怠詳細ページ
-    // Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
-// 管理者用スタッフ一覧ページのルート
-    Route::get('/admin/staff/list', [AdminController::class, 'staffIndex'])->name('admin.staff.list');
-// 管理者用スタッフ別勤怠一覧
-    Route::get('/admin/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('admin.staff.attendance.list');
 // 申請一覧画面
     Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
 // 修正申請承認画面
