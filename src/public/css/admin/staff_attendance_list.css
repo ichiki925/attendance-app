@@ -87,20 +87,23 @@
 .attendance-table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 5px;
     font-size: 14px;
     background-color: #fff;
 }
 
-.attendance-table th,
-.attendance-table td {
+.attendance-table th {
     padding: 10px;
-    text-align: center;
-    border-bottom: 1px solid #f4f4f4;
     color: #898989;
+    text-align: center;
+    border-bottom: 2px solid #f4f4f4;
 }
 
-.attendance-table th {
-    border-bottom: 2px solid #f4f4f4;
+.attendance-table td {
+    padding: 10px;
+    border-bottom: 1px solid #f4f4f4;
+    text-align: center;
+    color: #898989;
 }
 
 .attendance-table tr:last-child td {
@@ -115,6 +118,12 @@
 
 .detail-link:hover {
     text-decoration: underline;
+}
+
+#monthPicker {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .export-btn-container {

@@ -98,10 +98,63 @@ class AdminController extends Controller
         return view('admin.staff_list', compact('staffs'));
     }
 
-    public function staffAttendanceIndex($id)
+    public function staffAttendanceIndex(Request $request, $id)
     {
         $staff = User::where('role', '!=', 'admin')->findOrFail($id);
-        return view('admin.staff_attendance_list', ['staff_name' => $staff->name]);
+
+        // クエリパラメータから年月を取得（なければ現在の月）
+        $monthParam = $request->query('month');
+        $currentMonth = Carbon::hasFormat($monthParam, 'Y-m') ? $monthParam : Carbon::now()->format('Y-m');
+
+        // 日付の範囲を計算
+        $startDate = Carbon::parse($currentMonth)->startOfMonth();
+        $endDate = Carbon::parse($currentMonth)->endOfMonth();
+
+        // 指定されたスタッフの指定月の勤怠情報を取得
+        $attendances = Attendance::where('user_id', $staff->id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->with('breaks')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->map(function ($attendance) {
+                // 休憩時間の合計を計算
+                $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
+                    if ($break->break_time) {
+                        list($hours, $minutes, $seconds) = explode(':', $break->break_time);
+                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                    }
+                    return 0;
+                });
+
+                // 勤務時間の計算（休憩時間を引く）
+                if ($attendance->start_time && $attendance->end_time) {
+                    $startTime = Carbon::parse($attendance->start_time);
+                    $endTime = Carbon::parse($attendance->end_time);
+                    $workDurationSeconds = $endTime->diffInSeconds($startTime);
+
+                    // 休憩時間を引く
+                    $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
+
+                    // `H:i:s` に変換
+                    $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+                } else {
+                    $attendance->total_time = '-';
+                }
+
+                // 休憩時間 `H:i:s` に変換
+                $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
+
+                return $attendance;
+            });
+
+        return view('admin.staff_attendance_list', compact('staff', 'attendances', 'currentMonth'));
+    }
+
+
+    public function exportAttendance($id)
+    {
+        // ここでCSV出力処理を実装（今は未実装のため、プレースホルダー）
+        return response()->json(['message' => 'CSV出力機能は未実装です'], 200);
     }
 
     public function applicationIndex()
