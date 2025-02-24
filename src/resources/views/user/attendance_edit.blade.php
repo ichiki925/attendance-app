@@ -16,46 +16,63 @@
             <table class="edit-table">
                 <tr>
                     <th>名前</th>
-                    <td class="value"><span class="name-padding">{{ $attendance->user->name }}</span></td>
+                    <td>{{ $application->user->name }}</td>
                 </tr>
                 <tr>
                     <th>日付</th>
-                    <td class="value">
-                        <span class="date-year">{{ \Carbon\Carbon::parse($attendance->date)->year }}年</span>
-                        <span>{{ \Carbon\Carbon::parse($attendance->date)->month }}月{{ \Carbon\Carbon::parse($attendance->date)->day }}日</span>
+                    <td class="date-container">
+                        <span class="year">{{ \Carbon\Carbon::parse($application->attendance->date)->format('Y') }}年</span>
+                        <span class="date">{{ \Carbon\Carbon::parse($application->attendance->date)->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr>
                     <th>出勤・退勤</th>
                     <td class="time-container">
-                        <span class="start-time">{{ \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}</span>
+                        <span class="start-time">{{ isset($application->start_time) ? \Carbon\Carbon::parse($application->start_time)->format('H:i') : '-' }}</span>
                         <span class="separator">～</span>
-                        <span class="end-time">{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '未退勤' }}</span>
+                        <span class="end-time">{{ isset($application->end_time) ? \Carbon\Carbon::parse($application->end_time)->format('H:i') : '-' }}</span>
                     </td>
                 </tr>
-                @if ($attendance->breaks->isNotEmpty())
-                    @foreach ($attendance->breaks as $index => $break)
-                    <tr>
-                        <th>{{ $loop->first ? '休憩' : '休憩' . $loop->iteration }}</th>
-                        <td class="time-container">
-                            <span class="start-time">{{ \Carbon\Carbon::parse($break->break_start)->format('H:i') }}</span>
-                            <span class="separator">～</span>
-                            <span class="end-time">{{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '未終了' }}</span>
-                        </td>
-                    </tr>
+
+                @php
+                    $breaks = $application->attendance->breaks;
+                @endphp
+
+                @if ($breaks->isNotEmpty())
+                    @foreach ($breaks as $index => $break)
+                        <tr>
+                            <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
+                            <td class="time-container">
+                                <span class="start-time">
+                                    {{ isset($application->{"breaks_{$index}_start"}) && !empty($application->{"breaks_{$index}_start"})
+                                        ? \Carbon\Carbon::parse($application->{"breaks_{$index}_start"})->format('H:i')
+                                        : \Carbon\Carbon::parse($break->break_start)->format('H:i') }}
+                                </span>
+                                <span class="separator">～</span>
+                                <span class="end-time">
+                                    {{ isset($application->{"breaks_{$index}_end"}) && !empty($application->{"breaks_{$index}_end"})
+                                        ? \Carbon\Carbon::parse($application->{"breaks_{$index}_end"})->format('H:i')
+                                        : ($break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '未終了') }}
+                                </span>
+                            </td>
+                        </tr>
                     @endforeach
                 @else
                     <tr>
                         <th>休憩</th>
-                        <td class="value">休憩なし</td>
+                        <td>-</td>
                     </tr>
                 @endif
+
+
                 <tr>
                     <th>備考</th>
-                    <td>{{ $attendance->remarks ?? '' }}</td>
+                    <td>{{ $application->reason ?? $application->attendance->remarks ?? '-' }}</td>
                 </tr>
             </table>
     </div>
-    <p class="notice-text">*承認待ちのため修正はできません。</p>
+    <div class="notice-container">
+        <p class="notice-text">*承認待ちのため修正はできません。</p>
+    </div>
 </div>
 @endsection

@@ -48,6 +48,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('staff.attendance.list');
     Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportAttendance'])
     ->name('attendance.export');
+    Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('applications.index');
+    // 修正申請承認画面
+    Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
+
+    // 申請承認処理
+    Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');
 
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
@@ -64,12 +70,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 
-
-
-
-
-// 申請一覧画面
-    Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('admin.stamp_correction_request.list');
-// 修正申請承認画面
-    Route::get('/admin/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('admin.application.detail');
-    Route::post('/admin/application/approve/{id}', [AdminController::class, 'approve'])->name('admin.approve');

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\User;
+use App\Models\AttendanceRequest as AttendanceRequestModel;
 use App\Http\Requests\AttendanceRequest;
 use Carbon\Carbon;
 
@@ -157,46 +158,73 @@ class AdminController extends Controller
         return response()->json(['message' => 'CSV出力機能は未実装です'], 200);
     }
 
-    public function applicationIndex()
+    public function applicationIndex(Request $request)
     {
-        // ダミーデータ
-        $applications = [
-            (object)[ 'status' => '承認待ち', 'name' => '西 伶奈', 'target_date' => '2023/06/01', 'reason' => '遅延のため', 'application_date' => '2023/06/02' ],
-            (object)[ 'status' => '承認待ち', 'name' => '山田 太郎', 'target_date' => '2023/06/01', 'reason' => '遅延のため', 'application_date' => '2023/08/02' ],
-            (object)[ 'status' => '承認待ち', 'name' => '山田 花子', 'target_date' => '2023/06/02', 'reason' => '遅延のため', 'application_date' => '2023/07/02' ],
-        ];
+        // タブの選択状態を取得（デフォルトは "pending"）
+        $allowedStatuses = ['pending', 'approved'];
+        // タブの選択状態を取得（不正な値があればデフォルトを 'pending' に）
+        $status = in_array($request->query('status', 'pending'), $allowedStatuses)
+            ? $request->query('status')
+            : 'pending';
 
-        return view('admin.application_list', compact('applications'));
+        // 申請一覧を取得（承認待ち or 承認済み）
+        $applications = AttendanceRequestModel::where('request_status', $status)
+            ->with('user', 'attendance')
+            ->orderBy('created_at', 'desc') // `requested_at` ではなく `created_at` に統一
+            ->get();
+
+        return view('admin.application_list', compact('applications', 'status'));
     }
 
     public function showApplicationDetail($id)
     {
-        $attendance = (object)[
-            'id' => $id,
-            'name' => '西 伶奈',
-            'year' => '2023',
-            'date' => '6月1日',
-            'start_time' => '09:00',
-            'end_time' => '18:00',
-            'break_start' => '12:00',
-            'break_end' => '13:00',
-            'break2' => null,
-            'note' => '電車遅延のため',
-            'status' => 'pending',
-        ];
+        // タブの選択状態を取得（デフォルトは "pending"）
+        $status = $request->query('status', 'pending');
 
-        return view('admin.application_approval', compact('attendance'));
+        // 申請一覧を取得（承認待ち or 承認済み）
+        $applications = AttendanceRequestModel::where('request_status', $status)
+            ->with('user', 'attendance')
+            ->orderBy('requested_at', 'desc')
+            ->get();
+
+        return view('admin.application_detail', compact('applications', 'status'));
     }
 
     public function approve($id)
     {
-        // 承認処理を実装
-        return redirect()->route('admin.application.detail', $id)->with('success', '申請を承認しました。');
+        $application = AttendanceRequestModel::findOrFail($id);
+        $attendance = $application->attendance;
+
+        // 勤務時間の更新
+        $attendance->start_time = $application->attendance->start_time;
+        $attendance->end_time = $application->attendance->end_time;
+        $attendance->remarks = $application->reason; // 申請理由を備考に記録
+        $attendance->save();
+
+        // 既存の休憩データを削除
+        $attendance->breaks()->delete();
+
+        // 申請された休憩データを適用
+        if (!empty($application->breaks)) {
+            foreach ($application->breaks as $break) {
+                if (!empty($break['start']) && !empty($break['end'])) {
+                    BreakTime::create([
+                        'attendance_id' => $attendance->id,
+                        'break_start' => $break['start'],
+                        'break_end' => $break['end'],
+                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])),
+                    ]);
+                }
+            }
+        }
+
+        // 修正申請のステータスを「承認済み」に更新
+        $application->update([
+            'request_status' => 'approved',
+        ]);
+
+        return redirect()->route('admin.application.index')->with('success', '修正申請を承認しました。');
     }
 
 
-    // public function approve(Request $request, $id)
-    // {
-    //     // 修正申請承認処理
-    // }
 }

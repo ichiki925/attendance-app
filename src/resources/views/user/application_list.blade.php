@@ -13,8 +13,12 @@
         <h1 class="title">申請一覧</h1>
     </div>
     <div class="tabs">
-        <button class="tab-button active">承認待ち</button>
-        <button class="tab-button">承認済み</button>
+        <a href="?status=pending" class="tab-button {{ request('status', 'pending') === 'pending' ? 'active' : '' }}">
+            承認待ち
+        </a>
+        <a href="?status=approved" class="tab-button {{ request('status') === 'approved' ? 'active' : '' }}">
+            承認済み
+        </a>
     </div>
     <div class="table-container">
         <table class="application-table">
@@ -32,9 +36,10 @@
                 @foreach($applications as $application)
                 <tr>
                     <td>{{ $application->request_status == 'pending' ? '承認待ち' : '承認済み' }}</td>
-                    <td>{{ $application->attendance->date }}</td>
+                    <td>{{ $application->user->name }}</td>
+                    <td>{{ \Carbon\Carbon::parse($application->attendance->date)->format('Y/m/d') }}</td>
                     <td>{{ $application->reason }}</td>
-                    <td>{{ $application->requested_at->format('Y/m/d H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($application->created_at)->format('Y/m/d') }}</td>
                     <td><a href="{{ route('applications.show', $application->id) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach

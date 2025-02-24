@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\BreakTime;
+use App\Models\AttendanceRequest as AttendanceRequestModel;
 use Carbon\Carbon;
 use App\Http\Requests\AttendanceRequest;
 
@@ -169,7 +170,6 @@ class UserController extends Controller
 
     public function updateAttendance(AttendanceRequest $request, $id)
     {
-        // 管理者にもこれ追加
         $validated = $request->validated();
 
         $attendance = Attendance::where('user_id', Auth::id())
@@ -177,16 +177,29 @@ class UserController extends Controller
             ->with('breaks')
             ->firstOrFail();
 
-        // 勤務時間の更新
-        $attendance->start_time = $request->input('start_time');
-        $attendance->end_time = $request->input('end_time');
-        $attendance->remarks = $request->input('remarks');
-        $attendance->save();
+        // 既存の「承認待ち」の修正申請があるか確認
+        $existingRequest = AttendanceRequestModel::where('attendance_id', $attendance->id)
+            ->where('user_id', Auth::id())
+            ->where('request_status', 'pending')
+            ->first();
 
-        // 既存の休憩データを削除（新しいデータで上書き）
-        $attendance->breaks()->delete();
+        if ($existingRequest) {
+            return redirect()->route('attendance.detail', $id)->with('error', '既に承認待ちの修正申請があります。');
+        }
 
-        // 新しい休憩データを保存
+        // **修正申請を作成（勤怠データは変更しない）**
+        $application = AttendanceRequestModel::create([
+            'attendance_id' => $attendance->id,
+            'user_id' => Auth::id(),
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'reason' => $validated['remarks'],
+            'request_status' => 'pending', // デフォルトで「承認待ち」
+        ]);
+
+        BreakTime::where('attendance_id', $attendance->id)->delete();
+
+        // **休憩情報の登録**
         if (!empty($validated['breaks'])) {
             foreach ($validated['breaks'] as $break) {
                 if (!empty($break['start']) && !empty($break['end'])) {
@@ -194,49 +207,54 @@ class UserController extends Controller
                         'attendance_id' => $attendance->id,
                         'break_start' => $break['start'],
                         'break_end' => $break['end'],
-                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])), // 休憩時間を計算
+                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])),
                     ]);
                 }
             }
         }
 
-        return redirect()->route('attendance.detail', $id)->with('success', '勤怠情報を更新しました。');
+        return redirect()->route('applications.index', ['status' => 'pending']);
+
     }
 
-    public function applicationIndex()
+    public function applicationIndex(Request $request)
     {
-        $user = Auth::user();
+        $status = $request->query('status', 'pending'); // クエリパラメータから status を取得（デフォルトは 'pending'）
 
-        // ログインユーザーの申請データ取得
-        $applications = AttendanceRequest::where('user_id', $user->id)
-            ->orderBy('requested_at', 'desc')
+        // 承認待ち or 承認済み のデータを取得
+        $applications = AttendanceRequestModel::where('user_id', Auth::id())
+            ->when($status, function ($query, $status) {
+                return $query->where('request_status', $status);
+            })
+            ->with('user')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('user.application_list', compact('applications'));
+        return view('user.application_list', compact('applications', 'status'));
     }
 
     public function applicationShow($id)
     {
-        $user = Auth::user();
-
-        // ログインユーザーが作成した申請のみ取得
-        $application = AttendanceRequest::where('user_id', $user->id)
+        $application = AttendanceRequestModel::where('user_id', Auth::id())
             ->where('id', $id)
+            ->with(['attendance', 'attendance.breaks'])
             ->firstOrFail();
 
-        return view('user.application_detail', compact('application'));
+        $attendance = $application->attendance;
+
+        // ✅ 修正申請の内容があれば、それを適用
+        $attendance->remarks = $application->reason ?? $attendance->remarks;
+
+        foreach ($attendance->breaks as $index => $break) {
+            $break->break_start = $application->{"breaks_{$index}_start"} ?? $break->break_start;
+            $break->break_end = $application->{"breaks_{$index}_end"} ?? $break->break_end;
+        }
+
+        if ($application->request_status == 'pending') {
+            return view('user.attendance_edit', compact('application'));
+        }
+
+        return redirect()->route('attendance.detail', $attendance->id);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

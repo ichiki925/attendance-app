@@ -19,7 +19,7 @@
                 <ul>
                     <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
                     <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
-                    <li><a href="{{ route('admin.stamp_correction_request.list') }}">申請一覧</a></li>
+                    <li><a href="{{ route('admin.applications.index') }}">申請一覧</a></li>
                     <li>
                         <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: inline;">
                             @csrf

@@ -37,6 +37,7 @@
     cursor: pointer;
     font-size: 16px;
     font-weight: normal;
+    color: #333;
     margin-right: 10px;
     transition: font-weight 0.2s ease;
 
@@ -90,4 +91,26 @@
 
 .detail-link:hover {
     text-decoration: underline;
+}
+
+@media (min-width: 768px) and (max-width: 850px) {
+    .application-list {
+        max-width: 85%;
+    }
+
+    .application-table th,
+    .application-table td {
+        table-layout: fixed;
+        text-align: center;
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .application-table th:first-child {
+        padding: 10px 0px;
+    }
+
+    .detail-link {
+        font-size: 14px;
+    }
 }

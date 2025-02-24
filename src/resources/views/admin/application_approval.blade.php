@@ -1,9 +1,7 @@
-@extends('layouts.app_admin') {{-- レイアウトを指定 --}}
+@extends('layouts.app_admin')
 
-<!-- タイトル -->
 @section('title', '勤怠詳細')
 
-<!-- CSS読み込み -->
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/admin/application_approval.css') }}">
 @endsection
@@ -19,45 +17,50 @@
             <table>
                 <tr>
                     <th>名前</th>
-                    <td>{{ $attendance->name }}</td>
+                    <td>{{ $application->user->name }}</td>
                 </tr>
                 <tr>
                     <th>日付</th>
                     <td class="date-container">
-                        <span class="year">{{ $attendance->year }}年</span>
-                        <span class="date">{{ $attendance->date }}</span>
+                        <span class="year">{{ \Carbon\Carbon::parse($application->attendance->date)->format('Y') }}年</span>
+                        <span class="date">{{ \Carbon\Carbon::parse($application->attendance->date)->format('m月d日') }}</span>
                     </td>
                 </tr>
                 <tr>
                     <th>出勤・退勤</th>
                     <td class="time-container">
-                        <span class="start-time">{{ $attendance->start_time }}</span>
+                        <span class="start-time">{{ $application->attendance->start_time ?? '-' }}</span>
                         <span class="separator">～</span>
-                        <span class="end-time">{{ $attendance->end_time }}</span>
+                        <span class="end-time">{{ $application->attendance->end_time ?? '-' }}</span>
                     </td>
                 </tr>
                 <tr>
                     <th>休憩</th>
                     <td class="time-container">
-                        <span class="start-time">{{ $attendance->break_start }}</span>
-                        <span class="separator">～</span>
-                        <span class="end-time">{{ $attendance->break_end }}</span>
+                        @if (optional($application->attendance->breaks)->isNotEmpty())
+                            @foreach ($application->attendance->breaks as $index => $break)
+                                <div class="break-time">
+                                    <span class="break-label">休憩{{ $index + 1 }}:</span>
+                                    <span class="start-time">{{ $break->break_start ?? '-' }}</span>
+                                    <span class="separator">～</span>
+                                    <span class="end-time">{{ $break->break_end ?? '-' }}</span>
+                                </div>
+                            @endforeach
+                        @else
+                            -
+                        @endif
                     </td>
                 </tr>
                 <tr>
-                    <th>休憩2</th>
-                    <td>{{ $attendance->break2 ?? '' }}</td>
-                </tr>
-                <tr>
                     <th>備考</th>
-                    <td>{{ $attendance->note }}</td>
+                    <td>{{ $application->reason }}</td>
                 </tr>
             </table>
         </div>
     </div>
     <div class="button-container">
-        @if ($attendance->status === 'pending')
-        <form method="POST" action="{{ route('admin.approve', $attendance->id) }}">
+        @if ($application->request_status === 'pending')
+        <form method="POST" action="{{ route('admin.application.approve', $application->id) }}">
             @csrf
             <button class="approval-button">承認</button>
         </form>

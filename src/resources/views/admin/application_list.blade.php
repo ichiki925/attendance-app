@@ -1,9 +1,7 @@
-@extends('layouts.app_admin') {{-- レイアウトを指定 --}}
+@extends('layouts.app_admin')
 
-<!-- タイトル -->
 @section('title', '申請一覧')
 
-<!-- CSS読み込み -->
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/admin/application_list.css') }}">
 @endsection
@@ -15,8 +13,14 @@
         <h1 class="title">申請一覧</h1>
     </div>
     <div class="tabs">
-        <button class="tab-button active">承認待ち</button>
-        <button class="tab-button">承認済み</button>
+        <a href="{{ route('admin.applications.index', ['status' => 'pending']) }}"
+        class="tab-button {{ ($status ?? 'pending') === 'pending' ? 'active' : '' }}">
+            承認待ち
+        </a>
+        <a href="{{ route('admin.applications.index', ['status' => 'approved']) }}"
+        class="tab-button {{ ($status ?? 'pending') === 'approved' ? 'active' : '' }}">
+            承認済み
+        </a>
     </div>
     <div class="table-container">
         <table class="application-table">
@@ -38,7 +42,7 @@
                     <td>{{ $application->target_date }}</td>
                     <td>{{ $application->reason }}</td>
                     <td>{{ $application->application_date }}</td>
-                    <td><a href="#" class="detail-link">詳細</a></td>
+                    <td><a href="{{ route('admin.application.detail', ['id' => $application->id]) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach
             </tbody>
