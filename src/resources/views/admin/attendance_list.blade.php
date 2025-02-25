@@ -40,10 +40,10 @@
                 @foreach ($attendances as $attendance)
                 <tr>
                     <td>{{ $attendance->user->name ?? '不明' }}</td> <!-- ユーザー名 -->
-                    <td>{{ $attendance->start_time }}</td>
-                    <td>{{ $attendance->end_time ?? '-' }}</td>
-                    <td>{{ $attendance->total_break_time ?? '00:00:00' }}</td> <!-- 休憩時間 -->
-                    <td>{{ $attendance->total_time ?? '-' }}</td>
+                    <td>{{ \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}</td>
+                    <td>{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}</td>
+                    <td>{{ $attendance->total_break_time ? \Carbon\Carbon::parse($attendance->total_break_time)->format('H:i') : '-' }}</td>
+                    <td>{{ $attendance->total_time ? \Carbon\Carbon::parse($attendance->total_time)->format('H:i') : '-' }}</td>
                     <td><a href="{{ route('admin.attendance.detail', $attendance->id) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach

@@ -37,12 +37,14 @@
             <tbody>
                 @foreach ($applications as $application)
                 <tr>
-                    <td>{{ $application->status }}</td>
-                    <td>{{ $application->name }}</td>
-                    <td>{{ $application->target_date }}</td>
+                    <td>{{ $application->request_status == 'pending' ? '承認待ち' : '承認済み' }}</td>
+                    <td>{{ $application->user->name }}</td>
+                    <td>{{ optional($application->attendance)->date ? \Carbon\Carbon::parse($application->attendance->date)->format('Y/m/d') : '-' }}</td>
                     <td>{{ $application->reason }}</td>
-                    <td>{{ $application->application_date }}</td>
-                    <td><a href="{{ route('admin.application.detail', ['id' => $application->id]) }}" class="detail-link">詳細</a></td>
+                    <td>{{ \Carbon\Carbon::parse($application->created_at)->format('Y/m/d') }}</td>
+                    <td>
+                        <a href="{{ route('admin.application.detail', ['id' => $application->id]) }}" class="detail-link">詳細</a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

@@ -49,10 +49,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportAttendance'])
     ->name('attendance.export');
     Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('applications.index');
-    // 修正申請承認画面
     Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
-
-    // 申請承認処理
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');
 
 
