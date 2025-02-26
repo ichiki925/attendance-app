@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveRequestedAtFromAttendanceRequestsTable extends Migration
+class RemoveRequestedAtFromAttendanceRequests extends Migration
 {
     /**
      * Run the migrations.
@@ -26,7 +26,7 @@ class RemoveRequestedAtFromAttendanceRequestsTable extends Migration
     public function down()
     {
         Schema::table('attendance_requests', function (Blueprint $table) {
-            //
+            $table->timestamp('requested_at')->nullable();
         });
     }
 }

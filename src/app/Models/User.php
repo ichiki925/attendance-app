@@ -35,11 +35,6 @@ class User extends Authenticatable
         return $this->role === 'user';
     }
 
-    // staffsテーブルとのリレーション (1対1)
-    public function staff()
-    {
-        return $this->hasOne(Staff::class);
-    }
 
     // attendancesテーブルとのリレーション (1対多)
     public function attendances()
