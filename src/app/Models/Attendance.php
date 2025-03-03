@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BreakTime;
+use Carbon\Carbon;
 
 class Attendance extends Model
 {
@@ -23,6 +24,19 @@ class Attendance extends Model
         'status',
         'remarks',
     ];
+
+    // end_time をセットする時に '-' や '' を NULL に変換する
+    public function setEndTimeAttribute($value)
+    {
+        $this->attributes['end_time'] = ($value === '-' || empty($value)) ? null : $value;
+    }
+
+    // date を取得する時に Carbon インスタンスとして返す（null の場合は null）
+    public function getDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value) : null;
+    }
+
 
     // リレーション: ユーザー（1対多の「多」側）
     public function user()

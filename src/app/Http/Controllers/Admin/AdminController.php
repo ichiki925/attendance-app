@@ -29,22 +29,38 @@ class AdminController extends Controller
             ->orderBy('start_time', 'asc')
             ->get()
             ->map(function ($attendance) {
-            // 休憩時間の合計を計算
+            // 休憩時間の合計を計算（分単位）
             $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
-                return strtotime($break->break_time) - strtotime('00:00:00');
+                if (!empty($break->break_time) && strpos($break->break_time, ':') !== false) {
+                    list($hours, $minutes) = explode(':', $break->break_time);
+                    return ($hours * 3600) + ($minutes * 60);
+                }
+                return 0;
             });
 
-            // 勤務時間を計算（休憩時間を引く）
+
+            $totalBreakMinutes = ceil($totalBreakSeconds / 60);
+            $breakHours = floor($totalBreakMinutes / 60);
+            $breakMinutes = $totalBreakMinutes % 60;
+            $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
+
+            // 勤務時間の計算
             if ($attendance->start_time && $attendance->end_time) {
-                $workDurationSeconds = strtotime($attendance->end_time) - strtotime($attendance->start_time);
+                $startTime = Carbon::parse($attendance->start_time);
+                $endTime = Carbon::parse($attendance->end_time);
+                $workDurationSeconds = $endTime->diffInSeconds($startTime);
+
+                // 休憩時間を引いた勤務時間
                 $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
 
-                $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+                $totalMinutes = ceil($netWorkSeconds / 60);
+                $hours = floor($totalMinutes / 60);
+                $minutes = $totalMinutes % 60;
+
+                $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
             } else {
                 $attendance->total_time = '-';
             }
-
-            $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
 
             return $attendance;
         });
@@ -80,11 +96,18 @@ class AdminController extends Controller
         if (!empty($validated['breaks'])) {
             foreach ($validated['breaks'] as $break) {
                 if (!empty($break['start']) && !empty($break['end'])) {
+                    $breakStart = Carbon::parse($break['start']);
+                    $breakEnd = Carbon::parse($break['end']);
+                    $breakDurationMinutes = ceil($breakStart->diffInSeconds($breakEnd) / 60);
+
+                    $breakHours = floor($breakDurationMinutes / 60);
+                    $breakMinutes = $breakDurationMinutes % 60;
+
                     BreakTime::create([
                         'attendance_id' => $attendance->id,
-                        'break_start' => $break['start'],
-                        'break_end' => $break['end'],
-                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])), // 休憩時間を計算
+                        'break_start' => $breakStart->format('H:i'),
+                        'break_end' => $breakEnd->format('H:i'),
+                        'break_time' => sprintf('%02d:%02d', $breakHours, $breakMinutes),
                     ]);
                 }
             }
@@ -120,14 +143,22 @@ class AdminController extends Controller
             ->orderBy('date', 'asc')
             ->get()
             ->map(function ($attendance) {
-                // 休憩時間の合計を計算
+                // 休憩時間の合計を計算（秒単位）
                 $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
                     if ($break->break_time) {
-                        list($hours, $minutes, $seconds) = explode(':', $break->break_time);
-                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                        $timeParts = explode(':', $break->break_time);
+                        $hours = (int) $timeParts[0];
+                        $minutes = (int) $timeParts[1];
+                        return ($hours * 3600) + ($minutes * 60);
                     }
                     return 0;
                 });
+
+                // 休憩時間を分単位に変換
+                $totalBreakMinutes = ceil($totalBreakSeconds / 60);
+                $breakHours = floor($totalBreakMinutes / 60);
+                $breakMinutes = $totalBreakMinutes % 60;
+                $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
 
                 // 勤務時間の計算（休憩時間を引く）
                 if ($attendance->start_time && $attendance->end_time) {
@@ -138,14 +169,15 @@ class AdminController extends Controller
                     // 休憩時間を引く
                     $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
 
-                    // `H:i:s` に変換
-                    $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+                    // 分単位に変換
+                    $totalMinutes = ceil($netWorkSeconds / 60);
+                    $hours = floor($totalMinutes / 60);
+                    $minutes = $totalMinutes % 60;
+
+                    $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
                 } else {
                     $attendance->total_time = '-';
                 }
-
-                // 休憩時間 `H:i:s` に変換
-                $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
 
                 return $attendance;
             });

@@ -10,14 +10,14 @@ class CreateBreaksTable extends Migration
     public function up()
     {
         Schema::create('breaks', function (Blueprint $table) {
-            $table->id(); // 主キー
-            $table->unsignedBigInteger('attendance_id'); // 外部キー
-            $table->time('break_start'); // 休憩開始時刻
-            $table->time('break_end')->nullable(); // 休憩終了時刻（NULL許容）
-            $table->time('break_time')->nullable(); // 休憩合計時間（NULL許容）
-            $table->timestamps(); // 作成・更新日時
+            $table->id();
+            $table->unsignedBigInteger('attendance_id');
+            $table->time('break_start')->nullable();
+            $table->time('break_end')->nullable();
+            $table->time('break_time')->nullable();
+            $table->timestamps();
 
-            // 外部キー制約
+
             $table->foreign('attendance_id')->references('id')->on('attendances')->onDelete('cascade');
         });
     }

@@ -48,9 +48,11 @@ class UserController extends Controller
                                     ->first();
 
             if ($attendance) {
+                $breakStart = Carbon::now()->toTimeString();
+
                 BreakTime::create([ // 修正：BreakTimeモデルを使用
                     'attendance_id' => $attendance->id,
-                    'break_start' => $now->toTimeString(),
+                    'break_start' => $breakStart,
                 ]);
 
                 // 勤怠ステータスを「on_break」に更新
@@ -64,19 +66,19 @@ class UserController extends Controller
                                     ->first();
 
             if ($attendance) {
-                $break = BreakTime::where('attendance_id', $attendance->id) // 修正：BreakTimeを使用
+                $break = BreakTime::where('attendance_id', $attendance->id)
                                 ->whereNull('break_end')
                                 ->latest()
                                 ->first();
 
                 if ($break) {
-                    $breakEnd = $now->toTimeString();
+                    $breakEnd = Carbon::now()->toTimeString();
                     $breakStart = Carbon::parse($break->break_start);
-                    $breakTime = $breakStart->diff($now)->format('%H:%I:%S');
+                    $breakTime = $breakStart ? $breakStart->diff(Carbon::now())->format('%H:%I:%S') : null;
 
                     $break->update([
-                        'break_end' => $breakEnd,
-                        'break_time' => $breakTime,
+                        'break_end' => $breakEnd ?? null,
+                        'break_time' => $breakTime ?? null,
                     ]);
 
                     // 勤怠ステータスを「working」に戻す
@@ -86,9 +88,11 @@ class UserController extends Controller
         }
         // 退勤処理
         elseif ($status === 'completed') {
+
             $attendance = Attendance::where('user_id', $user->id)
                                     ->whereDate('date', today())
                                     ->first();
+
 
             if ($attendance) {
                 $endTime = $now->toTimeString();
@@ -123,39 +127,46 @@ class UserController extends Controller
             ->orderBy('date', 'asc')
             ->get()
             ->map(function ($attendance) {
-                // 休憩時間を合計（数値変換後）
+                // 休憩時間の合計計算（分単位）
                 $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
                     if ($break->break_time) {
-                        list($hours, $minutes, $seconds) = explode(':', $break->break_time);
-                        return ($hours * 3600) + ($minutes * 60) + $seconds;
+                        list($hours, $minutes) = explode(':', $break->break_time);
+                        return ($hours * 3600) + ($minutes * 60);
                     }
                     return 0;
                 });
+
+                $totalBreakMinutes = ceil($totalBreakSeconds / 60);
+                $breakHours = floor($totalBreakMinutes / 60);
+                $breakMinutes = $totalBreakMinutes % 60;
+                $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
 
                 // 勤務時間の計算
                 if ($attendance->start_time && $attendance->end_time) {
                     $startTime = Carbon::parse($attendance->start_time);
                     $endTime = Carbon::parse($attendance->end_time);
-                    $workDurationSeconds = $endTime->diffInSeconds($startTime); // 出勤時間の合計（秒）
+                    $workDurationSeconds = $endTime->diffInSeconds($startTime);
 
                     // 休憩時間を引く
                     $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
 
-                    // `H:i:s` に変換
-                    $attendance->total_time = gmdate('H:i:s', $netWorkSeconds);
+                    // 分単位に切り上げ
+                    $totalMinutes = ceil($netWorkSeconds / 60);
+                    $hours = floor($totalMinutes / 60);
+                    $minutes = $totalMinutes % 60;
+
+                    $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
                 } else {
                     $attendance->total_time = '-';
                 }
 
-                // 休憩時間 `H:i:s` に変換
-                $attendance->total_break_time = gmdate('H:i:s', $totalBreakSeconds);
-
                 return $attendance;
             });
 
-
         return view('user.attendance_list', compact('attendances', 'currentMonth'));
     }
+
+    
 
     // 勤怠詳細ページ
     public function attendanceDetail($id)
@@ -203,11 +214,18 @@ class UserController extends Controller
         if (!empty($validated['breaks'])) {
             foreach ($validated['breaks'] as $break) {
                 if (!empty($break['start']) && !empty($break['end'])) {
+                    $breakStart = Carbon::parse($break['start']);
+                    $breakEnd = Carbon::parse($break['end']);
+                    $breakDurationMinutes = ceil($breakStart->diffInSeconds($breakEnd) / 60);
+
+                    $breakHours = floor($breakDurationMinutes / 60);
+                    $breakMinutes = $breakDurationMinutes % 60;
+
                     BreakTime::create([
                         'attendance_id' => $attendance->id,
-                        'break_start' => $break['start'],
-                        'break_end' => $break['end'],
-                        'break_time' => gmdate('H:i:s', strtotime($break['end']) - strtotime($break['start'])),
+                        'break_start' => $breakStart->format('H:i'),
+                        'break_end' => $breakEnd->format('H:i'),
+                        'break_time' => sprintf('%02d:%02d', $breakHours, $breakMinutes),
                     ]);
                 }
             }

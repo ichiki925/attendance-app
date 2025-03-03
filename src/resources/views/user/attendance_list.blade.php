@@ -48,9 +48,27 @@
                 <tr>
                     <td>{{ $date->format('m/d') }}({{ ['日', '月', '火', '水', '木', '金', '土'][$date->dayOfWeek] }})</td>
                     <td>{{ \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}</td>
-                    <td>{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}</td>
-                    <td>{{ $attendance->total_break_time ? \Carbon\Carbon::parse($attendance->total_break_time)->format('H:i') : '-' }}</td>
-                    <td>{{ $attendance->total_time ? \Carbon\Carbon::parse($attendance->total_time)->format('H:i') : '-' }}</td>
+                    <td>
+                        @if (!is_null($attendance->end_time))
+                            {{ \Carbon\Carbon::parse($attendance->end_time)->format('H:i') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if (!is_null($attendance->total_break_time))
+                            {{ $attendance->total_break_time }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if (!is_null($attendance->total_time))
+                            {{ $attendance->total_time }}
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td><a href="{{ route('attendance.detail', $attendance->id) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach

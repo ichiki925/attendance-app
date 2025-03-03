@@ -29,11 +29,11 @@
                 <th>出勤・退勤</th>
                 <td class="time-container">
                     <span class="start-time">
-                        {{ $application->start_time ? \Carbon\Carbon::parse($application->start_time)->format('H:i') : ($application->attendance->start_time ? \Carbon\Carbon::parse($application->attendance->start_time)->format('H:i') : '-') }}
+                        {{ $application->start_time && $application->start_time !== '-' ? \Carbon\Carbon::parse($application->start_time)->format('H:i') : ($application->attendance->start_time ? \Carbon\Carbon::parse($application->attendance->start_time)->format('H:i') : '-') }}
                     </span>
                     <span class="separator">～</span>
                     <span class="end-time">
-                        {{ $application->end_time ? \Carbon\Carbon::parse($application->end_time)->format('H:i') : ($application->attendance->end_time ? \Carbon\Carbon::parse($application->attendance->end_time)->format('H:i') : '-') }}
+                        {{ $application->end_time && $application->end_time !== '-' ? \Carbon\Carbon::parse($application->end_time)->format('H:i') : ($application->attendance->end_time ? \Carbon\Carbon::parse($application->attendance->end_time)->format('H:i') : '-') }}
                     </span>
                 </td>
             </tr>
@@ -44,9 +44,13 @@
                     <tr>
                         <th>{{ '休憩' . ($index + 1) }}</th>
                         <td class="time-container">
-                            <span class="start-time">{{ \Carbon\Carbon::parse($break->break_start)->format('H:i') }}</span>
+                            <span class="start-time">
+                                {{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '-' }}
+                            </span>
                             <span class="separator">～</span>
-                            <span class="end-time">{{ \Carbon\Carbon::parse($break->break_end)->format('H:i') }}</span>
+                            <span class="end-time">
+                                {{ $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '-' }}
+                            </span>
                         </td>
                     </tr>
                 @endforeach

@@ -11,18 +11,25 @@
 <div class="attendance_list">
     <div class="header">
         <div class="vertical-line"></div>
-        <h1 class="title">{{ \Carbon\Carbon::parse($selectedDate)->isoFormat('YYYY年M月D日') }}の勤怠</h1>
+        <h1 class="title">
+            {{ \Carbon\Carbon::parse($selectedDate)->isoFormat('YYYY年M月D日') }}の勤怠
+        </h1>
     </div>
     <div class="date-nav">
-        <a href="{{ route('admin.attendance.list', ['date' => \Carbon\Carbon::parse($selectedDate)->subDay()->toDateString()]) }}" class="prev">← 前日</a>
+        @php
+            $dateObj = !empty($selectedDate) ? \Carbon\Carbon::parse($selectedDate) : null;
+        @endphp
+        <a href="{{ route('admin.attendance.list', ['date' => $dateObj ? $dateObj->copy()->subDay()->toDateString() : '']) }}" class="prev">← 前日</a>
         <div class="center-content">
             <span class="material-symbols-outlined calendar-icon" id="calendarIcon">calendar_month</span>
-            <span class="current-date" id="selectedDateDisplay">{{ \Carbon\Carbon::parse($selectedDate)->format('Y/m/d') }}</span>
+            <span class="current-date" id="selectedDateDisplay">
+                {{ $dateObj ? $dateObj->format('Y/m/d') : '日付不明' }}
+            </span>
 
             <!-- カレンダー用の非表示の input -->
-            <input type="date" id="datePicker" value="{{ $selectedDate }}" class="hidden-date-picker">
+            <input type="date" id="datePicker" value="{{ $selectedDate ?? '' }}" class="hidden-date-picker">
         </div>
-        <a href="{{ route('admin.attendance.list', ['date' => \Carbon\Carbon::parse($selectedDate)->addDay()->toDateString()]) }}" class="next">翌日 →</a>
+        <a href="{{ route('admin.attendance.list', ['date' => $dateObj ? $dateObj->copy()->addDay()->toDateString() : '']) }}" class="next">翌日 →</a>
     </div>
     <div class="table-container">
         <table class="attendance-table">
@@ -39,11 +46,31 @@
             <tbody>
                 @foreach ($attendances as $attendance)
                 <tr>
-                    <td>{{ $attendance->user->name ?? '不明' }}</td> <!-- ユーザー名 -->
-                    <td>{{ \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}</td>
-                    <td>{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '-' }}</td>
-                    <td>{{ $attendance->total_break_time ? \Carbon\Carbon::parse($attendance->total_break_time)->format('H:i') : '-' }}</td>
-                    <td>{{ $attendance->total_time ? \Carbon\Carbon::parse($attendance->total_time)->format('H:i') : '-' }}</td>
+                    <td>{{ $attendance->user->name ?? '不明' }}</td>
+                    <td>
+                        {{ \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}
+                    </td>
+                    <td>
+                        @if (!is_null($attendance->end_time))
+                            {{ \Carbon\Carbon::parse($attendance->end_time)->format('H:i') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if (!is_null($attendance->total_break_time))
+                            {{ $attendance->total_break_time }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if (!is_null($attendance->total_time))
+                            {{ $attendance->total_time }}
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td><a href="{{ route('admin.attendance.detail', $attendance->id) }}" class="detail-link">詳細</a></td>
                 </tr>
                 @endforeach
