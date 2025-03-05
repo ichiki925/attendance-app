@@ -12,7 +12,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect('/login'); // 一般ユーザー向けログイン画面へリダイレクト
+            return redirect('/admin/login');
         }
         return $next($request);
     }

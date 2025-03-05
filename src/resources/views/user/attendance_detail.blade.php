@@ -46,41 +46,62 @@
                         @endif
                 </td>
             </tr>
-                @php $breakIndex = 0; @endphp
-                @foreach ($attendance->breaks as $breakIndex => $break)
+
+            @foreach ($attendance->breaks as $breakIndex => $break)
                 <tr>
                     <th>{{ $breakIndex === 0 ? '休憩' : '休憩' . ($breakIndex + 1) }}</th>
                     <td>
                         <div class="value">
                             <input type="time" name="breaks[{{ $breakIndex }}][start]"
-                                value="{{ old("breaks.$breakIndex.start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '') }}">
+                                value="{{ old("breaks.$breakIndex.start", request()->input("breaks.$breakIndex.start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '')) }}">
                             <span class="symbol">～</span>
                             <input type="time" name="breaks[{{ $breakIndex }}][end]"
-                                value="{{ old("breaks.$breakIndex.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '') }}">
+                                value="{{ old("breaks.$breakIndex.end", request()->input("breaks.$breakIndex.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '')) }}">
                         </div>
-                            @if ($errors->has("breaks.$breakIndex.start") || $errors->has("breaks.$breakIndex.end"))
-                                <div class="error-container">
-                                    <p class="error-message">
-                                        {{ $errors->first("breaks.$breakIndex.start") ?? $errors->first("breaks.$breakIndex.end") }}
-                                    </p>
-                                </div>
-                            @endif
+                        @php
+                            $startError = $errors->first("breaks.$breakIndex.start");
+                            $endError = $errors->first("breaks.$breakIndex.end");
+                        @endphp
+
+                        @if ($startError || $endError)
+                            <div class="error-container">
+                                <p class="error-message">
+                                    {{ $startError === $endError ? $startError : ($startError ?? $endError) }}
+                                </p>
+                            </div>
+                        @endif
                     </td>
                 </tr>
-                @endforeach
-            <tr>
-                <th>休憩{{ count($attendance->breaks) + 1 }}</th>
-                <td>
-                    <div class="value">
-                        <input type="time" name="breaks[{{ count($attendance->breaks) }}][start]"
-                            value="{{ old("breaks." . count($attendance->breaks) . ".start", '') }}">
-                        <span class="symbol">～</span>
-                        <input type="time" name="breaks[{{ count($attendance->breaks) }}][end]"
-                            value="{{ old("breaks." . count($attendance->breaks) . ".end", '') }}">
-                    </div>
-                </td>
-            </tr>
-            <tr>
+            @endforeach
+
+            @php $nextIndex = count($attendance->breaks); @endphp
+                <tr>
+                    <th>休憩{{ $nextIndex + 1 }}</th>
+                        <td>
+                            <div class="value">
+                                <input type="time" name="breaks[{{ $nextIndex }}][start]"
+                                    value="{{ old("breaks.$nextIndex.start", '') }}">
+                                <span class="symbol">～</span>
+                                <input type="time" name="breaks[{{ $nextIndex }}][end]"
+                                    value="{{ old("breaks.$nextIndex.end", '') }}">
+                            </div>
+                            @php
+                                $startErrorNew = $errors->first("breaks.$nextIndex.start");
+                                $endErrorNew = $errors->first("breaks.$nextIndex.end");
+                            @endphp
+
+                            @if (!empty(old("breaks.$nextIndex.start")) || !empty(old("breaks.$nextIndex.end")))
+                                @if ($startErrorNew || $endErrorNew)
+                                    <div class="error-container">
+                                        <p class="error-message">
+                                            {{ $startErrorNew === $endErrorNew ? $startErrorNew : ($startErrorNew ?? $endErrorNew) }}
+                                        </p>
+                                    </div>
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                <tr>
                 <th>備考</th>
                 <td>
                     <div class="value">
