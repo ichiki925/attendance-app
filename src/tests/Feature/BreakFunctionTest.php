@@ -44,7 +44,7 @@ class BreakFunctionTest extends TestCase
 
         $break = BreakTime::factory()->create([
             'attendance_id' => $attendance->id,
-            'break_start' => Carbon::now()->subMinutes(30)->format('H:i'), // H:i:s で保存
+            'break_start' => Carbon::now()->subMinutes(30)->format('H:i'),
             'break_end' => null,
         ]);
 
@@ -55,11 +55,11 @@ class BreakFunctionTest extends TestCase
 
         $response = $this->get('/attendance/register');
 
-        // 現在の時刻を H:i 形式に変換
+
         $expectedBreakEnd = Carbon::now()->format('H:i');
 
 
-        // HTML に break_end の時間が含まれているか確認
+
         $response->assertSee($expectedBreakEnd);
     }
 
@@ -131,7 +131,7 @@ class BreakFunctionTest extends TestCase
 
         $breakStart = Carbon::now()->subHours(2);
         $breakEnd = Carbon::now()->subHours(1);
-        $breakTime = $breakEnd->diff($breakStart)->format('%H:%I'); // 差分を計算（H:i 形式）
+        $breakTime = $breakEnd->diff($breakStart)->format('%H:%I');
 
         $break = BreakTime::factory()->create([
             'attendance_id' => $attendance->id,

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 class BreakTime extends Model
 {
     use HasFactory;
-    // テーブル名を明示的に指定
+
     protected $table = 'breaks';
 
     protected $fillable = [
@@ -19,7 +19,7 @@ class BreakTime extends Model
         'break_time',
     ];
 
-    // break_start をセットするときに '-' や '' を NULL に変換
+
     public function setBreakStartAttribute($value)
     {
         $this->attributes['break_start'] = !empty($value) ? $value : null;

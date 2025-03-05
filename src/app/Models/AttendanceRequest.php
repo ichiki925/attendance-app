@@ -21,8 +21,8 @@ class AttendanceRequest extends Model
     protected $casts = [
         'start_time' => 'string',
         'end_time' => 'string',
-        'created_at' => 'datetime', // 追加
-        'updated_at' => 'datetime', // 追加
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     // Attendanceとのリレーション

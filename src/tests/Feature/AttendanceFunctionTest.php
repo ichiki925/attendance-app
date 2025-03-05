@@ -69,36 +69,36 @@ class AttendanceFunctionTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $admin = User::factory()->create(['role' => 'admin']);
 
-        // 2️⃣ 勤怠データを Factory で作成（出勤のみ、退勤なし）
+
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
             'status' => 'working',
             'start_time' => Carbon::now()->format('H:i:s'),
-            'end_time' => null, // 退勤前
+            'end_time' => null,
         ]);
 
         $this->actingAs($admin);
         $response = $this->get('/admin/attendance/list');
 
-        // 4️⃣ 管理画面に出勤時刻が表示されていることを確認
+
         $response->assertStatus(200);
 
-        // Blade の表示ロジックに合わせてフォーマットを統一
-        $expectedStartTime = $attendance->start_time 
-            ? Carbon::parse($attendance->start_time)->format('H:i') 
+
+        $expectedStartTime = $attendance->start_time
+            ? Carbon::parse($attendance->start_time)->format('H:i')
             : '-';
 
-        // ここを追加！（管理画面に出勤時刻が表示されているか確認）
+
         $response->assertSee($expectedStartTime);
 
-        // 5️⃣ DB に勤怠データが正しく登録されていることを確認
+
         $this->assertDatabaseHas('attendances', [
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
             'status' => 'working',
             'start_time' => $attendance->start_time,
-            'end_time' => null, // 退勤前
+            'end_time' => null,
         ]);
     }
 

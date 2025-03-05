@@ -20,16 +20,16 @@ class User extends Authenticatable
     ];
 
     protected $attributes = [
-        'role' => 'user', // デフォルトは一般ユーザー
+        'role' => 'user',
     ];
 
-    // 管理者かどうかを判定するメソッド
+
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    // 一般ユーザーかどうかを判定するメソッド
+
     public function isUser()
     {
         return $this->role === 'user';

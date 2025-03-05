@@ -86,27 +86,27 @@
 document.getElementById('calendarIcon').addEventListener('click', function(event) {
     const monthPicker = document.getElementById('monthPicker');
 
-    // アイコンの位置を取得
+
     const rect = event.target.getBoundingClientRect();
 
-    // 位置をアイコンの直下に調整
+
     monthPicker.style.position = 'absolute';
     monthPicker.style.left = `${rect.left}px`;
     monthPicker.style.top = `${rect.bottom + window.scrollY}px`;
 
-    // 一時的に表示してから `showPicker()` を実行
+
     monthPicker.style.opacity = '1';
     monthPicker.style.pointerEvents = 'auto';
 
-    monthPicker.showPicker(); // カレンダーを開く
+    monthPicker.showPicker();
 });
 
-// 月を選択したときに、表示を変更し、URLを更新
+
 document.getElementById('monthPicker').addEventListener('change', function() {
-    const selectedMonth = this.value;  // YYYY-MM
+    const selectedMonth = this.value;
     document.getElementById('selectedMonth').innerText = selectedMonth.replace('-', '/');
 
-    // URLに `month` パラメータを追加
+
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('month', selectedMonth);
     window.location.href = currentUrl.toString();

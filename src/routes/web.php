@@ -14,7 +14,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('login');
     Route::post('/login', [AdminAuthController::class, 'login'])
         ->middleware('guest:admin');
-    // 他の管理者用ルート
+
 });
 
 
@@ -35,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login'); // 一般ユーザーは `/login` にリダイレクト
+        return redirect('/login');
     })->name('logout');
 });
 
@@ -54,9 +54,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-
-
-
 
 });
 

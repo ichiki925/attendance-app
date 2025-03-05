@@ -26,7 +26,7 @@
                 {{ $dateObj ? $dateObj->format('Y/m/d') : '日付不明' }}
             </span>
 
-            <!-- カレンダー用の非表示の input -->
+
             <input type="date" id="datePicker" value="{{ $selectedDate ?? '' }}" class="hidden-date-picker">
         </div>
         <a href="{{ route('admin.attendance.list', ['date' => $dateObj ? $dateObj->copy()->addDay()->toDateString() : '']) }}" class="next">翌日 →</a>
@@ -82,12 +82,12 @@
             document.getElementById('datePicker').showPicker();
         });
 
-        // 日付が選択されたら URL を変更してページをリロード
+
         document.getElementById('datePicker').addEventListener('change', function() {
-            const selectedDate = this.value;  // YYYY-MM-DD の形式
+            const selectedDate = this.value;
             document.getElementById('selectedDateDisplay').innerText = selectedDate.replace(/-/g, '/');
 
-            // URLに `date` パラメータを追加してページを更新
+
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('date', selectedDate);
             window.location.href = currentUrl.toString();
@@ -95,7 +95,7 @@
 
     </script>
     <style>
-        /* 隠し日付ピッカー */
+
         .hidden-date-picker {
             position: absolute;
             opacity: 0;

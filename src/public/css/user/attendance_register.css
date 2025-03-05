@@ -1,4 +1,4 @@
-/* 全体レイアウト */
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -8,14 +8,12 @@ body {
 }
 
 
-/* 勤怠画面全体 */
 .attendance {
     text-align: center;
     margin: 100px;
     padding: 20px;
 }
 
-/* 状態ラベル */
 .status-label {
     display: inline-block;
     font-size: 1rem;
@@ -26,7 +24,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* 日時表示 */
 .date-time p {
     font-size: 40px;
     color: #666;
@@ -39,7 +36,6 @@ body {
     margin: 0;
 }
 
-/* ボタンアクション */
 .actions {
     margin-top: 50px;
     display: flex;
@@ -62,7 +58,6 @@ body {
     transition: all 0.3s;
 }
 
-/* 出勤・退勤ボタン（黒背景・白文字） */
 .actions form input[value="working"]+button,
 .actions form input[value="completed"]+button {
     background-color: #000;
@@ -81,7 +76,6 @@ body {
     opacity: 0.8;
 }
 
-/* お疲れ様メッセージ */
 .actions p {
     font-size: 26px;
     color: #666;

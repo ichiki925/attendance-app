@@ -1,9 +1,9 @@
-@extends('layouts.app_user') {{-- レイアウトを指定 --}}
+@extends('layouts.app_user')
 
-<!-- タイトル -->
+
 @section('title','出勤登録')
 
-<!-- css読み込み -->
+
 @section('css')
 <link rel="stylesheet" href="{{ asset('/css/user/attendance_register.css')  }}" >
 @endsection

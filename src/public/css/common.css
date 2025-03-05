@@ -1,4 +1,3 @@
-/* 全体リセット */
 body,
 h1,
 ul,
@@ -13,14 +12,12 @@ button {
     background: none;
 }
 
-/* 背景と全体のフォント設定 */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
 }
 
-/* ヘッダーのスタイル */
 header {
     background-color: #000;
     color: #fff;
@@ -38,7 +35,6 @@ header {
     height: 30px;
 }
 
-/* ナビゲーションのスタイル */
 nav ul {
     display: flex;
     gap: 20px;
@@ -60,7 +56,6 @@ nav ul li .logout-button {
     cursor: pointer;
 }
 
-/* ホバー時のスタイル */
 nav ul li a:hover,
 nav ul li .logout-button:hover {
     color: #aaa;

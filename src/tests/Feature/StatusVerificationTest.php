@@ -18,7 +18,7 @@ class StatusVerificationTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        // ステータスが「勤務外」の場合
+
         $response = $this->get('/attendance/register');
 
         $response->assertStatus(200);
@@ -31,7 +31,7 @@ class StatusVerificationTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        // 出勤済みの勤怠データを作成
+
         Attendance::create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
@@ -51,7 +51,7 @@ class StatusVerificationTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        // 休憩中の勤怠データを作成
+
         Attendance::create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),
@@ -71,7 +71,7 @@ class StatusVerificationTest extends TestCase
         $user = User::factory()->create(['role' => 'user']);
         $this->actingAs($user);
 
-        // 退勤済みの勤怠データを作成
+
         Attendance::create([
             'user_id' => $user->id,
             'date' => Carbon::today()->toDateString(),

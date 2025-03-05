@@ -11,10 +11,10 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    // テーブル名を明示的に指定（必要であれば）
+
     protected $table = 'attendances';
 
-    // 更新可能なカラムを指定
+
     protected $fillable = [
         'user_id',
         'date',
@@ -25,13 +25,13 @@ class Attendance extends Model
         'remarks',
     ];
 
-    // end_time をセットする時に '-' や '' を NULL に変換する
+
     public function setEndTimeAttribute($value)
     {
         $this->attributes['end_time'] = ($value === '-' || empty($value)) ? null : $value;
     }
 
-    // date を取得する時に Carbon インスタンスとして返す（null の場合は null）
+
     public function getDateAttribute($value)
     {
         return $value ? Carbon::parse($value) : null;

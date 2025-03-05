@@ -20,16 +20,16 @@ class AdminController extends Controller
     {
         $selectedDate = $request->query('date', now()->toDateString());
 
-        // 指定された日付の勤怠データを取得
+
         $attendances = Attendance::where('date', $selectedDate)
             ->whereHas('user', function ($query) {
-                $query->where('role', '!=', 'admin'); // 管理者を除外
+                $query->where('role', '!=', 'admin');
             })
             ->with('user', 'breaks')
             ->orderBy('start_time', 'asc')
             ->get()
             ->map(function ($attendance) {
-            // 休憩時間の合計を計算（分単位）
+
             $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
                 if (!empty($break->break_time) && strpos($break->break_time, ':') !== false) {
                     list($hours, $minutes) = explode(':', $break->break_time);
@@ -44,13 +44,13 @@ class AdminController extends Controller
             $breakMinutes = $totalBreakMinutes % 60;
             $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
 
-            // 勤務時間の計算
+
             if ($attendance->start_time && $attendance->end_time) {
                 $startTime = Carbon::parse($attendance->start_time);
                 $endTime = Carbon::parse($attendance->end_time);
                 $workDurationSeconds = $endTime->diffInSeconds($startTime);
 
-                // 休憩時間を引いた勤務時間
+
                 $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
 
                 $totalMinutes = ceil($netWorkSeconds / 60);
@@ -78,21 +78,24 @@ class AdminController extends Controller
 
     public function updateAttendance(AttendanceRequest $request, $id)
     {
+
+
         $validated = $request->validated();
 
-        // 該当の勤怠データを取得
+
         $attendance = Attendance::with('breaks')->findOrFail($id);
 
-        // 勤務時間 & 備考の更新
+
+
         $attendance->start_time = $validated['start_time'];
         $attendance->end_time = $validated['end_time'] ?? null;
         $attendance->remarks = $validated['remarks'] ?? null;
         $attendance->save();
 
-        // 既存の休憩データを削除（新しいデータで上書き）
+
         $attendance->breaks()->delete();
 
-        // 新しい休憩データを保存
+
         if (!empty($validated['breaks'])) {
             foreach ($validated['breaks'] as $break) {
                 if (!empty($break['start']) && !empty($break['end'])) {
@@ -128,22 +131,22 @@ class AdminController extends Controller
     {
         $staff = User::where('role', '!=', 'admin')->findOrFail($id);
 
-        // クエリパラメータから年月を取得（なければ現在の月）
+
         $monthParam = $request->query('month');
         $currentMonth = Carbon::hasFormat($monthParam, 'Y-m') ? $monthParam : Carbon::now()->format('Y-m');
 
-        // 日付の範囲を計算
+
         $startDate = Carbon::parse($currentMonth)->startOfMonth();
         $endDate = Carbon::parse($currentMonth)->endOfMonth();
 
-        // 指定されたスタッフの指定月の勤怠情報を取得
+
         $attendances = Attendance::where('user_id', $staff->id)
             ->whereBetween('date', [$startDate, $endDate])
             ->with('breaks')
             ->orderBy('date', 'asc')
             ->get()
             ->map(function ($attendance) {
-                // 休憩時間の合計を計算（秒単位）
+
                 $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
                     if ($break->break_time) {
                         $timeParts = explode(':', $break->break_time);
@@ -154,22 +157,22 @@ class AdminController extends Controller
                     return 0;
                 });
 
-                // 休憩時間を分単位に変換
+
                 $totalBreakMinutes = ceil($totalBreakSeconds / 60);
                 $breakHours = floor($totalBreakMinutes / 60);
                 $breakMinutes = $totalBreakMinutes % 60;
                 $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
 
-                // 勤務時間の計算（休憩時間を引く）
+
                 if ($attendance->start_time && $attendance->end_time) {
                     $startTime = Carbon::parse($attendance->start_time);
                     $endTime = Carbon::parse($attendance->end_time);
                     $workDurationSeconds = $endTime->diffInSeconds($startTime);
 
-                    // 休憩時間を引く
+
                     $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
 
-                    // 分単位に変換
+
                     $totalMinutes = ceil($netWorkSeconds / 60);
                     $hours = floor($totalMinutes / 60);
                     $minutes = $totalMinutes % 60;
@@ -223,16 +226,16 @@ class AdminController extends Controller
         if ($application->attendance) {
             $attendance = $application->attendance;
 
-            // NULL の場合は元の値を保持
+
             $attendance->start_time = $application->start_time ?? $attendance->start_time;
             $attendance->end_time = $application->end_time ?? $attendance->end_time;
             $attendance->remarks = $application->reason;
             $attendance->save();
 
-            // 既存の休憩データを削除
+
             $attendance->breaks()->delete();
 
-            // 新しい休憩データを保存
+
             foreach ($attendance->breaks as $break) {
                 $attendance->breaks()->create([
                     'attendance_id' => $attendance->id,
@@ -242,11 +245,11 @@ class AdminController extends Controller
                 ]);
             }
 
-            // 最新のデータを取得
+
             $attendance->refresh();
         }
 
-        // 申請のステータスを "approved" に更新
+
         $application->update([
             'request_status' => 'approved',
         ]);

@@ -18,7 +18,7 @@ class AdminAuthController extends Controller
         return view('admin.login');
     }
 
-    // ログイン処理を行うメソッド
+
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
@@ -31,7 +31,7 @@ class AdminAuthController extends Controller
             ]);
         }
 
-        // 管理者でなければログインさせない
+
         if ($user->role !== 'admin') {
             throw ValidationException::withMessages([
                 'email' => '管理者権限がありません',
@@ -42,7 +42,7 @@ class AdminAuthController extends Controller
         return redirect()->route('admin.attendance.list');
     }
 
-    // ログアウト処理を行うメソッド
+
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
