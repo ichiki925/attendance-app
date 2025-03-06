@@ -18,7 +18,7 @@ class ModifyBreakStartNullableInBreaksTable extends Migration
     public function down()
     {
         Schema::table('breaks', function (Blueprint $table) {
-            $table->time('break_start')->nullable(false)->change(); // 変更を元に戻す（`NOT NULL` にする）
+            $table->time('break_start')->nullable(false)->change();
         });
     }
 }
