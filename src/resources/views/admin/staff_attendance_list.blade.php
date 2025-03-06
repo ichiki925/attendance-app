@@ -79,7 +79,13 @@
     </div>
 
     <div class="export-btn-container">
-        <button class="export-btn">CSV出力</button>
+        <form method="GET" action="{{ route('admin.staff.attendance.export', ['id' => $staff->id, 'month' => $currentMonth]) }}">
+            <select name="format" id="csvFormat" class="hidden-select">
+                <option value="utf8" selected>UTF-8</option>
+                <option value="sjis">Shift-JIS</option>
+            </select>
+            <button type="submit" class="export-btn" id="exportBtn">CSV出力</button>
+        </form>
     </div>
 </div>
 <script>
@@ -110,6 +116,13 @@ document.getElementById('monthPicker').addEventListener('change', function() {
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set('month', selectedMonth);
     window.location.href = currentUrl.toString();
+});
+
+// ✅ Shiftキーを押しながらクリックしたらShift-JISでダウンロード
+document.getElementById('exportBtn').addEventListener('click', function(event) {
+    if (event.shiftKey) {
+        document.getElementById('csvFormat').value = 'sjis'; // Shiftキーが押されたらShift-JISを選択
+    }
 });
 </script>
 

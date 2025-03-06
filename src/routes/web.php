@@ -29,8 +29,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
 
-
-
     Route::post('/logout', function (Request $request) {
         Auth::logout();
         $request->session()->invalidate();
@@ -47,7 +45,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/staff/list', [AdminController::class, 'staffIndex'])->name('staff.list');
     Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('staff.attendance.list');
     Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportAttendance'])
-    ->name('attendance.export');
+    ->name('staff.attendance.export');
     Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');

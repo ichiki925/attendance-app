@@ -189,10 +189,55 @@ class AdminController extends Controller
     }
 
 
-    public function exportAttendance($id)
+    public function exportAttendance($id, Request $request)
     {
-        // ここでCSV出力処理を実装（今は未実装のため、プレースホルダー）
-        return response()->json(['message' => 'CSV出力機能は未実装です'], 200);
+        $format = $request->query('format', 'utf8'); // デフォルトはUTF-8
+        $month = $request->query('month', Carbon::now()->format('Y-m'));
+
+        $attendances = Attendance::where('user_id', $id)
+            ->whereBetween('date', [
+                Carbon::parse($month . '-01')->startOfMonth(),
+                Carbon::parse($month . '-01')->endOfMonth()
+            ])
+            ->get();
+
+        // CSVデータを作成
+        $csvData = [];
+        $csvData[] = ['日付', '出勤', '退勤', '休憩時間', '合計時間']; // ヘッダー行
+
+        foreach ($attendances as $attendance) {
+            $csvData[] = [
+                $attendance->date,
+                $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : '-',
+                $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : '-',
+                $attendance->total_break_time ?? '-',
+                $attendance->total_time ?? '-',
+            ];
+        }
+
+        // CSVの文字列を生成
+        $callback = function () use ($csvData, $format) {
+            $file = fopen('php://output', 'w');
+
+            if ($format === 'sjis') {
+                stream_filter_prepend($file, 'convert.iconv.UTF-8/CP932//TRANSLIT');
+            }
+
+            foreach ($csvData as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        // CSVをダウンロードさせる
+        $fileName = "attendance_{$id}_{$month}.csv";
+        $contentType = $format === 'sjis' ? "text/csv; charset=Shift_JIS" : "text/csv; charset=UTF-8";
+
+        return response()->stream($callback, 200, [
+            "Content-Type" => $contentType,
+            "Content-Disposition" => "attachment; filename=\"$fileName\"",
+        ]);
     }
 
     public function applicationIndex(Request $request)
