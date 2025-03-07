@@ -47,12 +47,12 @@ class AttendanceEditTest extends TestCase
             'start_time' => '08:00',
             'end_time' => '17:00',
             'breaks' => [
-                ['start' => '18:00', 'end' => '19:00']
+                ['break_start' => '18:00', 'break_end' => '19:00']
             ],
             'remarks' => 'Test',
         ]);
 
-        $response->assertSessionHasErrors(['breaks.0.start']);
+        $response->assertSessionHasErrors(['breaks.0.break_start']);
     }
 
     public function test_validation_error_when_break_end_is_after_end_time()
@@ -69,12 +69,12 @@ class AttendanceEditTest extends TestCase
             'start_time' => '08:00',
             'end_time' => '17:00',
             'breaks' => [
-                ['start' => '12:00', 'end' => '18:00']
+                ['break_start' => '12:00', 'break_end' => '18:00']
             ],
             'remarks' => 'Test',
         ]);
 
-        $response->assertSessionHasErrors(['breaks.0.end']);
+        $response->assertSessionHasErrors(['breaks.0.break_end']);
     }
 
     public function test_validation_error_when_remarks_is_empty()

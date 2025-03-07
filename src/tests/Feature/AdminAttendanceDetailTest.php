@@ -68,12 +68,12 @@ class AdminAttendanceDetailTest extends TestCase
             'start_time' => '08:00',
             'end_time' => '17:00',
             'breaks' => [
-                ['start' => '18:00', 'end' => '19:00']
+                ['break_start' => '18:00', 'break_end' => '19:00']
             ],
             'remarks' => 'Test',
         ]);
 
-        $response->assertSessionHasErrors(['breaks.0.start']);
+        $response->assertSessionHasErrors(['breaks.0.break_start']);
     }
 
 
@@ -85,12 +85,12 @@ class AdminAttendanceDetailTest extends TestCase
             'start_time' => '08:00',
             'end_time' => '17:00',
             'breaks' => [
-                ['start' => '12:00', 'end' => '18:00']
+                ['break_start' => '12:00', 'break_end' => '18:00']
             ],
             'remarks' => 'Test',
         ]);
 
-        $response->assertSessionHasErrors(['breaks.0.end']);
+        $response->assertSessionHasErrors(['breaks.0.break_end']);
     }
 
 
