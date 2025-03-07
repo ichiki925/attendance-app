@@ -98,9 +98,9 @@ class AdminController extends Controller
 
         if (!empty($validated['breaks'])) {
             foreach ($validated['breaks'] as $break) {
-                if (!empty($break['start']) && !empty($break['end'])) {
-                    $breakStart = Carbon::parse($break['start']);
-                    $breakEnd = Carbon::parse($break['end']);
+                if (!empty($break['break_start']) && !empty($break['break_end'])) {
+                    $breakStart = Carbon::parse($break['break_start']);
+                    $breakEnd = Carbon::parse($break['break_end']);
                     $breakDurationMinutes = ceil($breakStart->diffInSeconds($breakEnd) / 60);
 
                     $breakHours = floor($breakDurationMinutes / 60);

@@ -52,22 +52,26 @@
                     <th>{{ $breakIndex === 0 ? '休憩' : '休憩' . ($breakIndex + 1) }}</th>
                     <td>
                         <div class="value">
-                            <input type="time" name="breaks[{{ $breakIndex }}][start]"
-                                value="{{ old("breaks.$breakIndex.start", request()->input("breaks.$breakIndex.start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '')) }}">
+                            <input type="time" name="breaks[{{ $breakIndex }}][break_start]"
+                                value="{{ old("breaks.$breakIndex.break_start", request()->input("breaks.$breakIndex.break_start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '')) }}">
                             <span class="symbol">～</span>
-                            <input type="time" name="breaks[{{ $breakIndex }}][end]"
-                                value="{{ old("breaks.$breakIndex.end", request()->input("breaks.$breakIndex.end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '')) }}">
+                            <input type="time" name="breaks[{{ $breakIndex }}][break_end]"
+                                value="{{ old("breaks.$breakIndex.break_end", request()->input("breaks.$breakIndex.break_end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '')) }}">
                         </div>
                         @php
-                            $startError = $errors->first("breaks.$breakIndex.start");
-                            $endError = $errors->first("breaks.$breakIndex.end");
+                            $startError = $errors->first("breaks.$breakIndex.break_start");
+                            $endError = $errors->first("breaks.$breakIndex.break_end");
                         @endphp
 
-                        @if ($startError || $endError)
+                        @if ($startError)
                             <div class="error-container">
-                                <p class="error-message">
-                                    {{ $startError === $endError ? $startError : ($startError ?? $endError) }}
-                                </p>
+                                <p class="error-message">{{ $startError }}</p>
+                            </div>
+                        @endif
+
+                        @if ($endError)
+                            <div class="error-container">
+                                <p class="error-message">{{ $endError }}</p>
                             </div>
                         @endif
                     </td>
@@ -79,26 +83,30 @@
                     <th>休憩{{ $nextIndex + 1 }}</th>
                         <td>
                             <div class="value">
-                                <input type="time" name="breaks[{{ $nextIndex }}][start]"
-                                    value="{{ old("breaks.$nextIndex.start", '') }}">
+                                <input type="time" name="breaks[{{ $nextIndex }}][break_start]"
+                                    value="{{ old("breaks.$nextIndex.break_start", '') }}">
                                 <span class="symbol">～</span>
-                                <input type="time" name="breaks[{{ $nextIndex }}][end]"
-                                    value="{{ old("breaks.$nextIndex.end", '') }}">
+                                <input type="time" name="breaks[{{ $nextIndex }}][break_end]"
+                                    value="{{ old("breaks.$nextIndex.break_end", '') }}">
                             </div>
                             @php
-                                $startErrorNew = $errors->first("breaks.$nextIndex.start");
-                                $endErrorNew = $errors->first("breaks.$nextIndex.end");
+                                $startErrorNew = $errors->first("breaks.$nextIndex.break_start");
+                                $endErrorNew = $errors->first("breaks.$nextIndex.break_end");
                             @endphp
 
-                            @if (!empty(old("breaks.$nextIndex.start")) || !empty(old("breaks.$nextIndex.end")))
-                                @if ($startErrorNew || $endErrorNew)
-                                    <div class="error-container">
-                                        <p class="error-message">
-                                            {{ $startErrorNew === $endErrorNew ? $startErrorNew : ($startErrorNew ?? $endErrorNew) }}
-                                        </p>
-                                    </div>
-                                @endif
+
+                            @if ($startErrorNew)
+                                <div class="error-container">
+                                    <p class="error-message">{{ $startErrorNew }}</p>
+                                </div>
                             @endif
+
+                            @if ($endErrorNew)
+                                <div class="error-container">
+                                    <p class="error-message">{{ $endErrorNew }}</p>
+                                </div>
+                            @endif
+
                         </td>
                     </tr>
                 <tr>
