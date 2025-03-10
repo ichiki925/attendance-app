@@ -8,6 +8,18 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 
+
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        return Auth::user()->role === 'admin'
+            ? redirect('/admin/attendance/list')
+            : redirect('/attendance/list');
+    }
+    return redirect('/login');
+});
+
+// 管理者ログイン（ゲスト専用）
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLogin'])
         ->middleware('guest:admin')
@@ -50,14 +62,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');
 
-
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-
 });
 
 
 
-
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+});
 
 
 
