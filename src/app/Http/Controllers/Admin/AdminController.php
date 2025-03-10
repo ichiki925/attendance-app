@@ -191,19 +191,55 @@ class AdminController extends Controller
 
     public function exportAttendance($id, Request $request)
     {
-        $format = $request->query('format', 'utf8'); // デフォルトはUTF-8
+        $format = $request->query('format', 'utf8');
         $month = $request->query('month', Carbon::now()->format('Y-m'));
 
         $attendances = Attendance::where('user_id', $id)
-            ->whereBetween('date', [
-                Carbon::parse($month . '-01')->startOfMonth(),
-                Carbon::parse($month . '-01')->endOfMonth()
-            ])
-            ->get();
+        ->whereBetween('date', [
+            Carbon::parse($month . '-01')->startOfMonth(),
+            Carbon::parse($month . '-01')->endOfMonth()
+        ])
+        ->with('breaks')
+        ->get()
+        ->map(function ($attendance) {
 
-        // CSVデータを作成
+            $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
+                if ($break->break_time) {
+                    list($hours, $minutes) = explode(':', $break->break_time);
+                    return ($hours * 3600) + ($minutes * 60);
+                }
+                return 0;
+            });
+
+            $totalBreakMinutes = ceil($totalBreakSeconds / 60);
+            $breakHours = floor($totalBreakMinutes / 60);
+            $breakMinutes = $totalBreakMinutes % 60;
+            $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
+
+
+            if ($attendance->start_time && $attendance->end_time) {
+                $startTime = Carbon::parse($attendance->start_time);
+                $endTime = Carbon::parse($attendance->end_time);
+                $workDurationSeconds = $endTime->diffInSeconds($startTime);
+
+                $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
+                $totalMinutes = ceil($netWorkSeconds / 60);
+                $hours = floor($totalMinutes / 60);
+                $minutes = $totalMinutes % 60;
+
+                $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
+            } else {
+                $attendance->total_time = '-';
+            }
+
+            return $attendance;
+        });
+
+
+
+
         $csvData = [];
-        $csvData[] = ['日付', '出勤', '退勤', '休憩時間', '合計時間']; // ヘッダー行
+        $csvData[] = ['日付', '出勤', '退勤', '休憩時間', '合計時間'];
 
         foreach ($attendances as $attendance) {
             $csvData[] = [
@@ -215,7 +251,7 @@ class AdminController extends Controller
             ];
         }
 
-        // CSVの文字列を生成
+
         $callback = function () use ($csvData, $format) {
             $file = fopen('php://output', 'w');
 
@@ -230,7 +266,7 @@ class AdminController extends Controller
             fclose($file);
         };
 
-        // CSVをダウンロードさせる
+
         $fileName = "attendance_{$id}_{$month}.csv";
         $contentType = $format === 'sjis' ? "text/csv; charset=Shift_JIS" : "text/csv; charset=UTF-8";
 
