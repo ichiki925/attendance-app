@@ -25,13 +25,13 @@ class AttendanceRequest extends Model
         'updated_at' => 'datetime',
     ];
 
-    // Attendanceとのリレーション
+
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);
     }
 
-    // Userとのリレーション
+
     public function user()
     {
         return $this->belongsTo(User::class);

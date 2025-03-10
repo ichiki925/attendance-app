@@ -36,13 +36,13 @@ class User extends Authenticatable
     }
 
 
-    // attendancesテーブルとのリレーション (1対多)
+
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
     }
 
-    // attendance_requestsテーブルとのリレーション (1対多)
+
     public function attendanceRequests()
     {
         return $this->hasMany(AttendanceRequest::class);

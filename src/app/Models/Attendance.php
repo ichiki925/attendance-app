@@ -38,7 +38,7 @@ class Attendance extends Model
     }
 
 
-    // リレーション: ユーザー（1対多の「多」側）
+
     public function user()
     {
         return $this->belongsTo(User::class);
