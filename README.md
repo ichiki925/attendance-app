@@ -24,27 +24,10 @@ DB_PASSWORD=laravel_pass
 ``` bash
 php artisan key:generate
 ```
-6. .env.testingファイルを作成
-7. .env.testingに以下の環境変数を追加
-``` text
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=test_database
-DB_USERNAME=root
-DB_PASSWORD=root
-```
-8. アプリケーションキーの作成
+
+6. マイグレーション・シーディングの実行
 ``` bash
-php artisan key:generate --env=testing
-```
-9. マイグレーションの実行
-``` bash
-php artisan migrate
-```
-10. シーディングの実行
-``` bash
-php artisan db:seed
+php artisan migrate --seed
 ```
 
 ## CSV出力機能について
@@ -71,6 +54,12 @@ password: password
 ## PHPUnitを利用したテストについて
 以下のコマンド:
 ```
+docker-compose exec mysql bash
+mysql -u root -p
+CREATE DATABASE test_database;
+exit
+exit
+
 docker-compose exec php bash
 php artisan migrate:fresh --env=testing
 ./vendor/bin/phpunit
