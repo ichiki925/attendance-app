@@ -25,6 +25,9 @@ class AdminController extends Controller
             ->whereHas('user', function ($query) {
                 $query->where('role', '!=', 'admin');
             })
+            ->whereDoesntHave('attendanceRequests', function ($query) { // 承認待ちの勤怠を除外
+                $query->where('request_status', 'pending');
+            })
             ->with('user', 'breaks')
             ->orderBy('start_time', 'asc')
             ->get()
@@ -142,6 +145,9 @@ class AdminController extends Controller
 
         $attendances = Attendance::where('user_id', $staff->id)
             ->whereBetween('date', [$startDate, $endDate])
+            ->whereDoesntHave('attendanceRequests', function ($query) { // 承認待ちの勤怠を除外
+                $query->where('request_status', 'pending');
+            })
             ->with('breaks')
             ->orderBy('date', 'asc')
             ->get()

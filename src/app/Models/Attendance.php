@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\AttendanceRequest;
 use App\Models\BreakTime;
 use Carbon\Carbon;
 
@@ -43,6 +44,11 @@ class Attendance extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function attendanceRequests()
+{
+    return $this->hasMany(AttendanceRequest::class, 'attendance_id');
+}
 
     public function breaks()
     {
