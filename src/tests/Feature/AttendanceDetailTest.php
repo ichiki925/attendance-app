@@ -26,7 +26,7 @@ class AttendanceDetailTest extends TestCase
         $response = $this->get(route('attendance.detail', $attendance->id));
 
         $response->assertStatus(200);
-        $response->assertSee($user->name); // 勤怠詳細ページにログインユーザーの氏名が表示されるか
+        $response->assertSee($user->name);
     }
 
     public function test_attendance_detail_page_displays_correct_date()

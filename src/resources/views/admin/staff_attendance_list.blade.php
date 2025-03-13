@@ -118,10 +118,9 @@ document.getElementById('monthPicker').addEventListener('change', function() {
     window.location.href = currentUrl.toString();
 });
 
-// ✅ Shiftキーを押しながらクリックしたらShift-JISでダウンロード
 document.getElementById('exportBtn').addEventListener('click', function(event) {
     if (event.shiftKey) {
-        document.getElementById('csvFormat').value = 'sjis'; // Shiftキーが押されたらShift-JISを選択
+        document.getElementById('csvFormat').value = 'sjis';
     }
 });
 </script>

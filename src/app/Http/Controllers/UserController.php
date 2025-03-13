@@ -123,7 +123,7 @@ class UserController extends Controller
 
         $attendances = Attendance::where('user_id', Auth::id())
             ->whereBetween('date', [$startDate, $endDate])
-            ->whereDoesntHave('attendanceRequests', function ($query) { // 修正
+            ->whereDoesntHave('attendanceRequests', function ($query) {
                 $query->where('request_status', 'pending');
             })
             ->with('breaks')

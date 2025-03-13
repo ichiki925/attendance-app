@@ -20,7 +20,7 @@
     <main class="main-content">
 
         <p>登録していただいたメールアドレスに認証メールを送付しました。<br>メール認証を完了してください。</p>
-        
+
         <form method="POST" action="{{ route('verification.send') }}">
             @csrf
             <button type="submit" class="verify-button">認証はこちらから</button>
