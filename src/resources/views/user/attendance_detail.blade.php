@@ -50,6 +50,7 @@
             <tbody id="break-container">
                 @php
                     $oldBreaks = old('breaks', $attendance->breaks->toArray());
+                    $oldBreaks[] = ['break_start' => '', 'break_end' => ''];
                 @endphp
 
                 @foreach ($oldBreaks as $breakIndex => $break)
