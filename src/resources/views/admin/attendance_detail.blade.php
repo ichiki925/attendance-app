@@ -47,68 +47,45 @@
                 </td>
             </tr>
 
-            @foreach ($attendance->breaks as $breakIndex => $break)
-                <tr>
-                    <th>{{ $breakIndex === 0 ? '休憩' : '休憩' . ($breakIndex + 1) }}</th>
-                    <td>
-                        <div class="value">
-                            <input type="time" name="breaks[{{ $breakIndex }}][break_start]"
-                                value="{{ old("breaks.$breakIndex.break_start", request()->input("breaks.$breakIndex.break_start", $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '')) }}">
-                            <span class="symbol">～</span>
-                            <input type="time" name="breaks[{{ $breakIndex }}][break_end]"
-                                value="{{ old("breaks.$breakIndex.break_end", request()->input("breaks.$breakIndex.break_end", $break->break_end ? \Carbon\Carbon::parse($break->break_end)->format('H:i') : '')) }}">
-                        </div>
-                        @php
-                            $startError = $errors->first("breaks.$breakIndex.break_start");
-                            $endError = $errors->first("breaks.$breakIndex.break_end");
-                        @endphp
+            <tbody id="break-container">
+                @php
+                    $oldBreaks = old('breaks', $attendance->breaks->toArray());
+                @endphp
 
-                        @if ($startError)
-                            <div class="error-container">
-                                <p class="error-message">{{ $startError }}</p>
-                            </div>
-                        @endif
-
-                        @if ($endError)
-                            <div class="error-container">
-                                <p class="error-message">{{ $endError }}</p>
-                            </div>
-                        @endif
-                    </td>
-                </tr>
-            @endforeach
-
-            @php $nextIndex = count($attendance->breaks); @endphp
-                <tr>
-                    <th>休憩{{ $nextIndex + 1 }}</th>
+                @foreach ($oldBreaks as $breakIndex => $break)
+                    <tr class="break-row">
+                        <th>{{ $breakIndex === 0 ? '休憩' : '休憩' . ($breakIndex + 1) }}</th>
                         <td>
                             <div class="value">
-                                <input type="time" name="breaks[{{ $nextIndex }}][break_start]"
-                                    value="{{ old("breaks.$nextIndex.break_start", '') }}">
+                                <input type="time" name="breaks[{{ $breakIndex }}][break_start]" class="break-start"
+                                    value="{{ old("breaks.$breakIndex.break_start", $break['break_start'] ?? '') }}">
                                 <span class="symbol">～</span>
-                                <input type="time" name="breaks[{{ $nextIndex }}][break_end]"
-                                    value="{{ old("breaks.$nextIndex.break_end", '') }}">
+                                <input type="time" name="breaks[{{ $breakIndex }}][break_end]" class="break-end"
+                                    value="{{ old("breaks.$breakIndex.break_end", $break['break_end'] ?? '') }}">
                             </div>
+
                             @php
-                                $startErrorNew = $errors->first("breaks.$nextIndex.break_start");
-                                $endErrorNew = $errors->first("breaks.$nextIndex.break_end");
+                                $startError = $errors->first("breaks.$breakIndex.break_start");
+                                $endError = $errors->first("breaks.$breakIndex.break_end");
                             @endphp
 
-                            @if ($startErrorNew)
+                            @if ($startError)
                                 <div class="error-container">
-                                    <p class="error-message">{{ $startErrorNew }}</p>
+                                    <p class="error-message">{{ $startError }}</p>
                                 </div>
                             @endif
 
-                            @if ($endErrorNew)
+                            @if ($endError)
                                 <div class="error-container">
-                                    <p class="error-message">{{ $endErrorNew }}</p>
+                                    <p class="error-message">{{ $endError }}</p>
                                 </div>
                             @endif
                         </td>
                     </tr>
+                @endforeach
+            </tbody>
 
-                <tr>
+            <tr>
                 <th>備考</th>
                 <td>
                     <div class="value">
@@ -121,9 +98,60 @@
                     @enderror
                 </td>
             </tr>
+
         </table>
         <button type="submit" class="edit-button">修正</button>
     </form>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const breakContainer = document.getElementById("break-container");
+
+    let breakCount = document.querySelectorAll(".break-row").length;
+
+    const addNewBreakRow = () => {
+        const newRow = document.createElement("tr");
+        newRow.classList.add("break-row");
+
+        const breakLabel = breakCount === 0 ? "休憩" : `休憩${breakCount + 1}`;
+
+        newRow.innerHTML = `
+            <th>${breakLabel}</th>
+            <td>
+                <div class="value">
+                    <input type="time" name="breaks[${breakCount}][break_start]" class="break-start">
+                    <span class="symbol">～</span>
+                    <input type="time" name="breaks[${breakCount}][break_end]" class="break-end">
+                </div>
+            </td>
+        `;
+
+        breakContainer.appendChild(newRow);
+        breakCount++;
+    };
+
+    const ensureEmptyBreakRow = () => {
+        const allBreakRows = document.querySelectorAll(".break-row");
+        if (allBreakRows.length === 0 ||
+            allBreakRows[allBreakRows.length - 1].querySelector(".break-start").value ||
+            allBreakRows[allBreakRows.length - 1].querySelector(".break-end").value) {
+            addNewBreakRow();
+        }
+    };
+
+    if (breakCount === 0) {
+        addNewBreakRow();
+    }
+
+    document.addEventListener("input", (event) => {
+        if (event.target.classList.contains("break-start") || event.target.classList.contains("break-end")) {
+            ensureEmptyBreakRow();
+        }
+    });
+});
+
+</script>
+
 @endsection
