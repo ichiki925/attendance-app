@@ -42,7 +42,7 @@
             @if ($application->attendance && $application->attendance->breaks->isNotEmpty())
                 @foreach ($application->attendance->breaks as $index => $break)
                     <tr>
-                        <th>{{ '休憩' . ($index + 1) }}</th>
+                        <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                         <td class="time-container">
                             <span class="start-time">
                                 {{ $break->break_start ? \Carbon\Carbon::parse($break->break_start)->format('H:i') : '-' }}
