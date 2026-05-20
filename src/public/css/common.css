@@ -19,7 +19,7 @@ body {
 }
 
 header {
-    background-color: #000;
+    background-color: #1a1f36;
     color: #fff;
     padding: 10px 20px;
 }
@@ -29,6 +29,33 @@ header {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+    background: #4f7ef8;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-text {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.logo-accent {
+    color: #4f7ef8;
 }
 
 .logo img {

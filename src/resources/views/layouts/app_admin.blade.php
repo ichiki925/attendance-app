@@ -12,7 +12,12 @@
     <header>
         <div class="container">
             <div class="logo">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Logo">
+                <span class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                </span>
+                <span class="logo-text">Attend<span class="logo-accent">Track</span></span>
             </div>
             <nav>
                 @if (Auth::check() && Auth::user()->role === 'admin')
