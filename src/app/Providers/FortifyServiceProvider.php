@@ -52,12 +52,13 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.register');
         });
 
-        Fortify::loginView(function () {
-            return view('auth.login');
-        });
 
         Fortify::loginView(function () {
             return request()->is('admin/*') ? view('admin.login') : view('auth.login');
+        });
+
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify-email');
         });
 
         RateLimiter::for('login', function (Request $request) {
@@ -81,10 +82,10 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (LoginRequest $request) {
             $credentials = $request->only('email', 'password');
 
-            // ユーザー検索
+
             $user = User::where('email', $credentials['email'])->first();
 
-            // ユーザーが存在し、パスワードが一致するか確認
+
             if (!$user || !Hash::check($credentials['password'], $user->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['ログイン情報が登録されていません。'],

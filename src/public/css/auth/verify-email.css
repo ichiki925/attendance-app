@@ -51,21 +51,29 @@ p {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 20px;
+    text-decoration: none;
 }
 
 .verify-button:hover {
     background-color: #e0dddd;
 }
 
-.resend-link {
-    display: block;
-    margin-top: 15px;
+.resend-form {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.resend-button {
     color: #007bff;
     font-size: 14px;
     text-decoration: none;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
 }
 
-.resend-link:hover {
+.resend-button:hover {
     text-decoration: underline;
 }
 

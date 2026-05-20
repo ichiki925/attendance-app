@@ -77,5 +77,5 @@ php artisan migrate:fresh --env=testing
 
 
 ## URL
-- 開発環境：http://localhost/
-- phpMyAdmin:：http://localhost:8080/
+- 開発環境:http://localhost/
+- phpMyAdmin：http://localhost:8080/

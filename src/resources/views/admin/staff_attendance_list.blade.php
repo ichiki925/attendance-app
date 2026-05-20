@@ -34,13 +34,15 @@
         <table class="attendance-table">
             <thead>
                 <tr>
-                    <th>日付</th>
-                    <th>出勤</th>
-                    <th>退勤</th>
-                    <th>休憩</th>
-                    <th>合計</th>
-                    <th>詳細</th>
-                </tr>
+                <th>日付</th>
+                <th>出勤</th>
+                <th>退勤</th>
+                <th>休憩</th>
+                <th>合計</th>
+                <th>残業</th>
+                <th>深夜</th>
+                <th>詳細</th>
+            </tr>
             </thead>
             <tbody>
                 @foreach ($attendances as $attendance)
@@ -70,6 +72,12 @@
                         @else
                             -
                         @endif
+                    </td>
+                    <td>
+                        {{ $attendance->getOvertimeFormatted() }}
+                    </td>
+                    <td>
+                        {{ $attendance->getLateNightFormatted() }}
                     </td>
                     <td><a href="{{ route('admin.attendance.detail', $attendance->id) }}" class="detail-link">詳細</a></td>
                 </tr>

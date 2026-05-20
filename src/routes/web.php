@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -31,7 +32,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 // 一般ユーザー
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/register', [UserController::class, 'showAttendanceRegister'])->name('attendance.register');
     Route::post('/attendance/register', [UserController::class, 'storeAttendance'])->name('attendance.store');
     Route::get('/attendance/list', [UserController::class, 'attendanceIndex'])->name('attendance.list');
@@ -41,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
 
+});
+
+Route::middleware(['auth'])->group(function () {
     Route::post('/logout', function (Request $request) {
         Auth::logout();
         $request->session()->invalidate();
@@ -67,9 +71,24 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 
+// メール認証の画面表示
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
-});
+})->middleware('auth')->name('verification.notice');
+
+
+// メール認証のリンクをクリックしたときの処理
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/attendance/register'); // 認証完了後のリダイレクト先
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// 認証メールの再送
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', '認証メールを再送しました');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
 
 
 

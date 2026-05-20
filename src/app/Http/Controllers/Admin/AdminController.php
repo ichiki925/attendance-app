@@ -32,40 +32,8 @@ class AdminController extends Controller
             ->orderBy('start_time', 'asc')
             ->get()
             ->map(function ($attendance) {
-
-            $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
-                if (!empty($break->break_time) && strpos($break->break_time, ':') !== false) {
-                    list($hours, $minutes) = explode(':', $break->break_time);
-                    return ($hours * 3600) + ($minutes * 60);
-                }
-                return 0;
-            });
-
-
-            $totalBreakMinutes = ceil($totalBreakSeconds / 60);
-            $breakHours = floor($totalBreakMinutes / 60);
-            $breakMinutes = $totalBreakMinutes % 60;
-            $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
-
-
-            if ($attendance->start_time && $attendance->end_time) {
-                $startTime = Carbon::parse($attendance->start_time);
-                $endTime = Carbon::parse($attendance->end_time);
-                $workDurationSeconds = $endTime->diffInSeconds($startTime);
-
-
-                $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
-
-                $totalMinutes = ceil($netWorkSeconds / 60);
-                $hours = floor($totalMinutes / 60);
-                $minutes = $totalMinutes % 60;
-
-                $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
-            } else {
-                $attendance->total_time = '-';
-            }
-
-            return $attendance;
+                $attendance->calculateTimes();
+                return $attendance;
         });
 
 
@@ -152,42 +120,7 @@ class AdminController extends Controller
             ->orderBy('date', 'asc')
             ->get()
             ->map(function ($attendance) {
-
-                $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
-                    if ($break->break_time) {
-                        $timeParts = explode(':', $break->break_time);
-                        $hours = (int) $timeParts[0];
-                        $minutes = (int) $timeParts[1];
-                        return ($hours * 3600) + ($minutes * 60);
-                    }
-                    return 0;
-                });
-
-
-                $totalBreakMinutes = ceil($totalBreakSeconds / 60);
-                $breakHours = floor($totalBreakMinutes / 60);
-                $breakMinutes = $totalBreakMinutes % 60;
-                $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
-
-
-                if ($attendance->start_time && $attendance->end_time) {
-                    $startTime = Carbon::parse($attendance->start_time);
-                    $endTime = Carbon::parse($attendance->end_time);
-                    $workDurationSeconds = $endTime->diffInSeconds($startTime);
-
-
-                    $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
-
-
-                    $totalMinutes = ceil($netWorkSeconds / 60);
-                    $hours = floor($totalMinutes / 60);
-                    $minutes = $totalMinutes % 60;
-
-                    $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
-                } else {
-                    $attendance->total_time = '-';
-                }
-
+                $attendance->calculateTimes();
                 return $attendance;
             });
 
@@ -208,36 +141,7 @@ class AdminController extends Controller
         ->with('breaks')
         ->get()
         ->map(function ($attendance) {
-
-            $totalBreakSeconds = $attendance->breaks->sum(function ($break) {
-                if ($break->break_time) {
-                    list($hours, $minutes) = explode(':', $break->break_time);
-                    return ($hours * 3600) + ($minutes * 60);
-                }
-                return 0;
-            });
-
-            $totalBreakMinutes = ceil($totalBreakSeconds / 60);
-            $breakHours = floor($totalBreakMinutes / 60);
-            $breakMinutes = $totalBreakMinutes % 60;
-            $attendance->total_break_time = sprintf('%02d:%02d', $breakHours, $breakMinutes);
-
-
-            if ($attendance->start_time && $attendance->end_time) {
-                $startTime = Carbon::parse($attendance->start_time);
-                $endTime = Carbon::parse($attendance->end_time);
-                $workDurationSeconds = $endTime->diffInSeconds($startTime);
-
-                $netWorkSeconds = max($workDurationSeconds - $totalBreakSeconds, 0);
-                $totalMinutes = ceil($netWorkSeconds / 60);
-                $hours = floor($totalMinutes / 60);
-                $minutes = $totalMinutes % 60;
-
-                $attendance->total_time = sprintf('%02d:%02d', $hours, $minutes);
-            } else {
-                $attendance->total_time = '-';
-            }
-
+            $attendance->calculateTimes();
             return $attendance;
         });
 

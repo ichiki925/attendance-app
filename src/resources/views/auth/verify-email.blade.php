@@ -21,12 +21,20 @@
 
         <p>登録していただいたメールアドレスに認証メールを送付しました。<br>メール認証を完了してください。</p>
 
-        <form method="POST" action="{{ route('verification.send') }}">
+        <a href="http://localhost:8025" class="verify-button">認証はこちらから</a>
+
+
+        <form method="POST" action="{{ route('verification.send') }}" class="resend-form">
             @csrf
-            <button type="submit" class="verify-button">認証はこちらから</button>
+            <button type="submit" class="resend-button">認証メールを再送する</button>
         </form>
 
-        <a href="#" class="resend-link">認証メールを再送する</a>
+
+        @if (auth()->user() && auth()->user()->hasVerifiedEmail())
+            <script>
+                window.location.href = "{{ route('attendance.register') }}";
+            </script>
+        @endif
     </main>
 
 </body>
