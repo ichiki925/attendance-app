@@ -248,6 +248,28 @@ class AdminController extends Controller
         return redirect()->route('admin.applications.index')->with('success', '申請を承認しました。');
     }
 
+    public function closingDayIndex()
+    {
+        $settings = \App\Models\ClosingDaySetting::all();
+        $active = \App\Models\ClosingDaySetting::where('is_active', true)->first();
+        return view('admin.closing_day_setting', compact('settings', 'active'));
+    }
+
+    public function closingDayUpdate(Request $request)
+    {
+        $request->validate([
+            'closing_day_setting_id' => 'required|exists:closing_day_settings,id',
+        ]);
+
+        // 全件をis_active=falseにしてから選択されたものだけtrueに
+        \App\Models\ClosingDaySetting::query()->update(['is_active' => false]);
+        \App\Models\ClosingDaySetting::where('id', $request->closing_day_setting_id)
+            ->update(['is_active' => true]);
+
+        return redirect()->route('admin.closing_day.index')
+            ->with('success', '締め日設定を更新しました。');
+    }
+
 
 
 }

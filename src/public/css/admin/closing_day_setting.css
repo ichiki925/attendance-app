@@ -1,0 +1,75 @@
+.closing-day-setting {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.closing-day-setting .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.closing-day-setting .vertical-line {
+    width: 4px;
+    height: 28px;
+    background-color: #1a1f36;
+    margin-right: 12px;
+    border-radius: 2px;
+}
+
+.closing-day-setting .title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #1a1f36;
+}
+
+.closing-day-setting .current-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.closing-day-setting .current-label span {
+    font-weight: bold;
+    color: #1a1f36;
+}
+
+.closing-day-setting .form-group {
+    margin-bottom: 24px;
+}
+
+.closing-day-setting select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1f36;
+}
+
+.closing-day-setting .btn-submit {
+    display: inline-block;
+    padding: 10px 32px;
+    background-color: #1a1f36;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.closing-day-setting .btn-submit:hover {
+    background-color: #2e3560;
+}
+
+.closing-day-setting .alert-success {
+    padding: 12px 16px;
+    background-color: #e6f4ea;
+    border: 1px solid #a8d5b5;
+    border-radius: 6px;
+    color: #2d6a4f;
+    margin-bottom: 20px;
+    font-size: 14px;
+}

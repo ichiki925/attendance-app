@@ -65,6 +65,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');
+    Route::get('/closing-day', [AdminController::class, 'closingDayIndex'])->name('closing_day.index');
+    Route::post('/closing-day', [AdminController::class, 'closingDayUpdate'])->name('closing_day.update');
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
