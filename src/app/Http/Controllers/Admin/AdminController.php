@@ -102,17 +102,44 @@ class AdminController extends Controller
     {
         $staff = User::where('role', '!=', 'admin')->findOrFail($id);
 
+        $mode = $request->query('mode', 'closing');
+        $periodParam = $request->query('period', Carbon::now()->format('Y-m'));
 
-        $monthParam = $request->query('month');
-        $currentMonth = Carbon::hasFormat($monthParam, 'Y-m') ? $monthParam : Carbon::now()->format('Y-m');
 
+        if ($mode === 'calendar') {
+            // カレンダー月モード（既存の動作）
+            $startDate = Carbon::parse($periodParam)->startOfMonth();
+            $endDate   = Carbon::parse($periodParam)->endOfMonth();
+            $displayLabel = Carbon::parse($periodParam)->format('Y/m');
 
-        $startDate = Carbon::parse($currentMonth)->startOfMonth();
-        $endDate = Carbon::parse($currentMonth)->endOfMonth();
+            $prevPeriod = Carbon::parse($periodParam)->subMonth()->format('Y-m');
+            $nextPeriod = Carbon::parse($periodParam)->addMonth()->format('Y-m');
+        } else {
+            // 締め日ベースモード
+            $closing = \App\Models\ClosingDaySetting::getActive();
+            $closingDay = $closing->closing_day;
 
+            // periodParam (Y-m) を基準に締め期間を計算
+            $base = Carbon::parse($periodParam);
+
+            if ($closingDay === 31) {
+                $startDate = $base->copy()->startOfMonth();
+                $endDate   = $base->copy()->endOfMonth();
+                $displayLabel = $base->format('Y/m') . '（末日締め）';
+                $prevPeriod = $base->copy()->subMonth()->format('Y-m');
+                $nextPeriod = $base->copy()->addMonth()->format('Y-m');
+            } else {
+                // 例: 20日締め → 前月21日〜当月20日
+                $startDate = $base->copy()->subMonth()->day($closingDay)->addDay()->startOfDay();
+                $endDate   = $base->copy()->day($closingDay)->startOfDay();
+                $displayLabel = $startDate->format('Y/m/d') . ' 〜 ' . $endDate->format('Y/m/d');
+                $prevPeriod = $base->copy()->subMonth()->format('Y-m');
+                $nextPeriod = $base->copy()->addMonth()->format('Y-m');
+            }
+        }
 
         $attendances = Attendance::where('user_id', $staff->id)
-            ->whereBetween('date', [$startDate, $endDate])
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
             ->whereDoesntHave('attendanceRequests', function ($query) {
                 $query->where('request_status', 'pending');
             })
@@ -124,7 +151,13 @@ class AdminController extends Controller
                 return $attendance;
             });
 
-        return view('admin.staff_attendance_list', compact('staff', 'attendances', 'currentMonth'));
+        $currentMonth = $periodParam; // CSV出力用に維持
+
+        return view('admin.staff_attendance_list', compact(
+            'staff', 'attendances', 'currentMonth',
+            'mode', 'periodParam', 'displayLabel', 'prevPeriod', 'nextPeriod'
+        ));
+
     }
 
 

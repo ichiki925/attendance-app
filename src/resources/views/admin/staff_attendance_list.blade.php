@@ -13,21 +13,21 @@
         <div class="vertical-line"></div>
         <h1 class="title">{{ $staff->name }}さんの勤怠</h1>
     </div>
-    @php
-        use Carbon\Carbon;
-        $current = Carbon::parse($currentMonth);
-        $prevMonth = $current->copy()->subMonth()->format('Y-m');
-        $nextMonth = $current->copy()->addMonth()->format('Y-m');
-    @endphp
     <div class="month-nav">
-        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'month' => $prevMonth]) }}" class="prev">← 前月</a>
+        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'period' => $prevPeriod, 'mode' => $mode]) }}" class="prev">← 前</a>
         <div class="center-content">
             <span class="material-symbols-outlined calendar-icon" id="calendarIcon">calendar_month</span>
-            <span class="current-month" id="selectedMonth">{{ $current->format('Y/m') }}</span>
-            <input type="month" id="monthPicker" value="{{ $currentMonth }}" class="hidden-month-picker">
+            <span class="current-month" id="selectedMonth">{{ $displayLabel }}</span>
+            <input type="month" id="monthPicker" value="{{ $periodParam }}" class="hidden-month-picker">
         </div>
-        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'month' => $nextMonth]) }}" class="next">翌月 →</a>
+        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'period' => $nextPeriod, 'mode' => $mode]) }}" class="next">次 →</a>
+    </div>
 
+    <div class="mode-toggle">
+        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'period' => $periodParam, 'mode' => 'closing']) }}"
+            class="toggle-btn {{ $mode === 'closing' ? 'active' : '' }}">締め期間</a>
+        <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'period' => $periodParam, 'mode' => 'calendar']) }}"
+            class="toggle-btn {{ $mode === 'calendar' ? 'active' : '' }}">カレンダー月</a>
     </div>
 
     <div class="table-container">
@@ -118,11 +118,8 @@ document.getElementById('calendarIcon').addEventListener('click', function(event
 
 document.getElementById('monthPicker').addEventListener('change', function() {
     const selectedMonth = this.value;
-    document.getElementById('selectedMonth').innerText = selectedMonth.replace('-', '/');
-
-
     const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set('month', selectedMonth);
+    currentUrl.searchParams.set('period', selectedMonth);
     window.location.href = currentUrl.toString();
 });
 
