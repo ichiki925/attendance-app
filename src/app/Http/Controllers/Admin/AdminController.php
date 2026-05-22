@@ -329,4 +329,38 @@ class AdminController extends Controller
             ->with('success', '丸め処理設定を更新しました。');
     }
 
+    public function attendanceTypeIndex()
+    {
+        $types = \App\Models\AttendanceType::all();
+        return view('admin.attendance_type_index', compact('types'));
+    }
+
+    public function attendanceTypeStore(Request $request)
+    {
+        $request->validate([
+            'name'       => 'required|string|max:255',
+            'color'      => 'required|string|max:7',
+            'is_paid'    => 'boolean',
+            'is_holiday' => 'boolean',
+        ]);
+
+        \App\Models\AttendanceType::create([
+            'name'       => $request->name,
+            'color'      => $request->color,
+            'is_paid'    => $request->boolean('is_paid'),
+            'is_holiday' => $request->boolean('is_holiday'),
+        ]);
+
+        return redirect()->route('admin.attendance_type.index')
+            ->with('success', '勤怠区分を追加しました。');
+    }
+
+    public function attendanceTypeDestroy($id)
+    {
+        \App\Models\AttendanceType::findOrFail($id)->delete();
+
+        return redirect()->route('admin.attendance_type.index')
+            ->with('success', '勤怠区分を削除しました。');
+    }
+
 }

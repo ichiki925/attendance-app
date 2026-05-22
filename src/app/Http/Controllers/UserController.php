@@ -22,8 +22,9 @@ class UserController extends Controller
                                 ->first();
 
         $status = $attendance ? $attendance->status : 'off_duty';
+        $attendanceTypes = \App\Models\AttendanceType::all();
 
-        return view('user.attendance_register', compact('status'));
+        return view('user.attendance_register', compact('status', 'attendanceTypes'));
     }
 
     public function storeAttendance(Request $request)
@@ -39,6 +40,7 @@ class UserController extends Controller
                 'date' => $now->toDateString(),
                 'start_time' => $now->toTimeString(),
                 'status' => 'working',
+                'attendance_type_id' => $request->input('attendance_type_id'),
             ]);
         }
 

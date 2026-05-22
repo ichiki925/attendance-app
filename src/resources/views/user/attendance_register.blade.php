@@ -29,6 +29,16 @@
             <form action="{{ route('attendance.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="status" value="working">
+                <div class="type-select">
+                    <label for="attendance_type_id">勤怠区分</label>
+                    <select name="attendance_type_id" id="attendance_type_id">
+                        @foreach($attendanceTypes as $type)
+                            <option value="{{ $type->id }}">
+                                {{ $type->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 <button type="submit">出勤</button>
             </form>
         @elseif ($status === 'working')

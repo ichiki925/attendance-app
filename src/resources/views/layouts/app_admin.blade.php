@@ -27,6 +27,7 @@
                     <li><a href="{{ route('admin.applications.index') }}">申請一覧</a></li>
                     <li><a href="{{ route('admin.closing_day.index') }}">締め日設定</a></li>
                     <li><a href="{{ route('admin.rounding_setting.index') }}">丸め設定</a></li>
+                    <li><a href="{{ route('admin.attendance_type.index') }}">区分設定</a></li>
                     <li>
                         <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: inline;">
                             @csrf

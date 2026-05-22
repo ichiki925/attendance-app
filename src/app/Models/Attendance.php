@@ -18,6 +18,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'user_id',
+        'attendance_type_id',
         'date',
         'start_time',
         'end_time',
@@ -39,6 +40,11 @@ class Attendance extends Model
     public function getDateAttribute($value)
     {
         return $value ? Carbon::parse($value) : null;
+    }
+
+    public function attendanceType()
+    {
+        return $this->belongsTo(AttendanceType::class);
     }
 
 
