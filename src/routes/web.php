@@ -67,6 +67,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');
     Route::get('/closing-day', [AdminController::class, 'closingDayIndex'])->name('closing_day.index');
     Route::post('/closing-day', [AdminController::class, 'closingDayUpdate'])->name('closing_day.update');
+    Route::get('/rounding-setting', [AdminController::class, 'roundingSettingIndex'])->name('rounding_setting.index');
+    Route::post('/rounding-setting', [AdminController::class, 'roundingSettingUpdate'])->name('rounding_setting.update');
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });

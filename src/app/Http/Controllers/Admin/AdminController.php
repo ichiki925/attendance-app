@@ -303,6 +303,30 @@ class AdminController extends Controller
             ->with('success', '締め日設定を更新しました。');
     }
 
+    public function roundingSettingIndex()
+    {
+        $setting = \App\Models\RoundingSetting::getActive();
+        return view('admin.rounding_setting', compact('setting'));
+    }
 
+    public function roundingSettingUpdate(Request $request)
+    {
+        $request->validate([
+            'round_minutes' => 'required|integer|min:1|max:60',
+            'round_type'    => 'required|in:floor,ceil,round',
+        ]);
+
+        \App\Models\RoundingSetting::query()->update(['is_active' => false]);
+        \App\Models\RoundingSetting::updateOrCreate(
+            [
+                'round_minutes' => $request->round_minutes,
+                'round_type'    => $request->round_type,
+            ],
+            ['is_active' => true]
+        );
+
+        return redirect()->route('admin.rounding_setting.index')
+            ->with('success', '丸め処理設定を更新しました。');
+    }
 
 }
