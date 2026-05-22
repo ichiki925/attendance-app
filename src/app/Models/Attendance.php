@@ -81,6 +81,13 @@ class Attendance extends Model
         $workSeconds = max($totalSeconds - $breakSeconds, 0);
         $workMinutes = (int) ceil($workSeconds / 60);
 
+        // 丸め処理を適用
+        try {
+            $workMinutes = \App\Models\RoundingSetting::applyRounding($workMinutes);
+        } catch (\Exception $e) {
+            // 丸め設定が取得できない場合はそのまま
+        }
+
         // 残業時間（8時間超の分）
         $regularMinutes = 8 * 60;
         $overtimeMinutes = max($workMinutes - $regularMinutes, 0);
