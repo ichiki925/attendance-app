@@ -57,6 +57,12 @@
                 <button type="submit">出勤</button>
             </form>
         @elseif ($status === 'working')
+            @php
+                $todayAttendance = \App\Models\Attendance::where('user_id', Auth::id())
+                    ->whereDate('date', today())
+                    ->first();
+            @endphp
+
             <form action="{{ route('attendance.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="status" value="completed">
@@ -67,6 +73,28 @@
                 <input type="hidden" name="status" value="on_break">
                 <button type="submit">休憩入</button>
             </form>
+
+            @if($todayAttendance && !$todayAttendance->leader_approved)
+                <div class="leader-approve-form">
+                    @if(session('error'))
+                        <p class="error-msg">{{ session('error') }}</p>
+                    @endif
+                    <div class="leader-divider"></div>
+                    <form action="{{ route('attendance.leader_approve') }}" method="POST">
+                        @csrf
+                        <div class="leader-input-row">
+                            <label>🔑 リーダー承認番号</label>
+                            <input type="password" name="secret_code" placeholder="番号を入力" class="leader-input">
+                        </div>
+                        <button type="submit" class="btn-leader">承認</button>
+                    </form>
+                </div>
+            @elseif($todayAttendance && $todayAttendance->leader_approved)
+                <div class="leader-approved-badge">
+                    <p class="approved-text">リーダー承認済み</p>
+                </div>
+            @endif
+
         @elseif ($status === 'on_break')
             <form action="{{ route('attendance.store') }}" method="POST">
                 @csrf
@@ -96,5 +124,6 @@
             info.style.display = 'none';
         }
     });
+
 </script>
 @endsection

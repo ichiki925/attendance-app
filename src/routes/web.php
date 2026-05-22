@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/attendance/update/{id}', [UserController::class, 'updateAttendance'])->name('attendance.update');
     Route::get('/stamp_correction_request/list', [UserController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/stamp_correction_request/{id}', [UserController::class, 'applicationShow'])->name('applications.show');
+    Route::post('/attendance/leader-approve', [UserController::class, 'leaderApprove'])->name('attendance.leader_approve');
 
 });
 
@@ -75,6 +76,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/attendance-type', [AdminController::class, 'attendanceTypeIndex'])->name('attendance_type.index');
     Route::post('/attendance-type', [AdminController::class, 'attendanceTypeStore'])->name('attendance_type.store');
     Route::delete('/attendance-type/{id}', [AdminController::class, 'attendanceTypeDestroy'])->name('attendance_type.destroy');
+    Route::get('/leader-setting', [AdminController::class, 'leaderSettingIndex'])->name('leader_setting.index');
+    Route::post('/leader-setting', [AdminController::class, 'leaderSettingUpdate'])->name('leader_setting.update');
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });

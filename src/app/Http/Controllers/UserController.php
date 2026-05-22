@@ -113,6 +113,36 @@ class UserController extends Controller
         return redirect()->route('attendance.register');
     }
 
+    public function leaderApprove(Request $request)
+    {
+        $request->validate([
+            'secret_code' => 'required|string',
+        ]);
+
+        $attendance = Attendance::where('user_id', Auth::id())
+            ->whereDate('date', today())
+            ->first();
+
+        if (!$attendance) {
+            return back()->with('error', '本日の勤怠が見つかりません。');
+        }
+
+        if ($attendance->leader_approved) {
+            return back()->with('error', 'すでに承認済みです。');
+        }
+
+        if (!\App\Models\LeaderSetting::verify($request->secret_code)) {
+            return back()->with('error', 'シークレット番号が正しくありません。');
+        }
+
+        $attendance->update([
+            'leader_approved'    => true,
+            'leader_approved_at' => now(),
+        ]);
+
+        return back()->with('success', 'リーダー承認が完了しました。');
+    }
+
     public function attendanceIndex(Request $request)
     {
 

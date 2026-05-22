@@ -392,4 +392,26 @@ class AdminController extends Controller
             ->with('success', '勤怠区分を削除しました。');
     }
 
+    public function leaderSettingIndex()
+    {
+        $setting = \App\Models\LeaderSetting::getActive();
+        return view('admin.leader_setting', compact('setting'));
+    }
+
+    public function leaderSettingUpdate(Request $request)
+    {
+        $request->validate([
+            'secret_code' => 'required|string|min:4|max:20',
+        ]);
+
+        \App\Models\LeaderSetting::query()->update(['is_active' => false]);
+        \App\Models\LeaderSetting::create([
+            'secret_code' => \Illuminate\Support\Facades\Hash::make($request->secret_code),
+            'is_active'   => true,
+        ]);
+
+        return redirect()->route('admin.leader_setting.index')
+            ->with('success', 'シークレット番号を更新しました。');
+    }
+
 }
