@@ -68,8 +68,8 @@ body {
 
 .actions form input[value="on_break"]~button,
 .actions form input[value="working_again"]~button {
-    background-color: #fff;
-    color: #000;
+    background-color: #7b93f5;
+    color: #fff;
 }
 
 
