@@ -329,6 +329,35 @@ class AdminController extends Controller
             ->with('success', '丸め処理設定を更新しました。');
     }
 
+    public function workPatternIndex()
+    {
+        $patterns = \App\Models\WorkPattern::all();
+        return view('admin.work_pattern_index', compact('patterns'));
+    }
+
+    public function workPatternStore(Request $request)
+    {
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'start_time'    => 'required|date_format:H:i',
+            'end_time'      => 'required|date_format:H:i',
+            'break_minutes' => 'required|integer|min:0|max:480',
+        ]);
+
+        \App\Models\WorkPattern::create($request->only('name', 'start_time', 'end_time', 'break_minutes'));
+
+        return redirect()->route('admin.work_pattern.index')
+            ->with('success', '勤務パターンを追加しました。');
+    }
+
+    public function workPatternDestroy($id)
+    {
+        \App\Models\WorkPattern::findOrFail($id)->delete();
+
+        return redirect()->route('admin.work_pattern.index')
+            ->with('success', '勤務パターンを削除しました。');
+    }
+
     public function attendanceTypeIndex()
     {
         $types = \App\Models\AttendanceType::all();

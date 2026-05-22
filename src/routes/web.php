@@ -69,6 +69,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('/closing-day', [AdminController::class, 'closingDayUpdate'])->name('closing_day.update');
     Route::get('/rounding-setting', [AdminController::class, 'roundingSettingIndex'])->name('rounding_setting.index');
     Route::post('/rounding-setting', [AdminController::class, 'roundingSettingUpdate'])->name('rounding_setting.update');
+    Route::get('/work-pattern', [AdminController::class, 'workPatternIndex'])->name('work_pattern.index');
+    Route::post('/work-pattern', [AdminController::class, 'workPatternStore'])->name('work_pattern.store');
+    Route::delete('/work-pattern/{id}', [AdminController::class, 'workPatternDestroy'])->name('work_pattern.destroy');
     Route::get('/attendance-type', [AdminController::class, 'attendanceTypeIndex'])->name('attendance_type.index');
     Route::post('/attendance-type', [AdminController::class, 'attendanceTypeStore'])->name('attendance_type.store');
     Route::delete('/attendance-type/{id}', [AdminController::class, 'attendanceTypeDestroy'])->name('attendance_type.destroy');

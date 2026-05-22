@@ -72,6 +72,10 @@ body {
     color: #fff;
 }
 
+.actions form button[type="submit"] {
+    margin-top: 16px;
+}
+
 
 .actions button:hover {
     opacity: 0.8;
@@ -83,22 +87,29 @@ body {
     margin: 20px 0;
 }
 
-.type-select {
+.type-select,
+.pattern-select {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     width: 100%;
 }
 
-.type-select label {
+.type-select label,
+.pattern-select label {
     font-size: 16px;
     color: #666;
+    width: 90px;
+    text-align: left;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.type-select select {
+.type-select select,
+.pattern-select select {
     font-size: 16px;
     padding: 6px 12px;
     border: 1px solid #ccc;
@@ -106,5 +117,12 @@ body {
     background: #fff;
     color: #333;
     cursor: pointer;
-    width: 120px;
+    width: 200px;
+}
+
+.pattern-info {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 16px;
+    text-align: center;
 }

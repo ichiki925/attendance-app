@@ -1,16 +1,16 @@
-.attendance-type-setting {
-    max-width: 800px;
+.work-pattern-setting {
+    max-width: 900px;
     margin: 40px auto;
     padding: 0 20px;
 }
 
-.attendance-type-setting .header {
+.work-pattern-setting .header {
     display: flex;
     align-items: center;
     margin-bottom: 32px;
 }
 
-.attendance-type-setting .vertical-line {
+.work-pattern-setting .vertical-line {
     width: 4px;
     height: 28px;
     background-color: #1a1f36;
@@ -18,13 +18,13 @@
     border-radius: 2px;
 }
 
-.attendance-type-setting .title {
+.work-pattern-setting .title {
     font-size: 20px;
     font-weight: bold;
     color: #1a1f36;
 }
 
-.attendance-type-setting .alert-success {
+.work-pattern-setting .alert-success {
     padding: 12px 16px;
     background-color: #e6f4ea;
     border: 1px solid #a8d5b5;
@@ -34,8 +34,7 @@
     font-size: 14px;
 }
 
-/* テーブル */
-.attendance-type-setting .table-wrapper {
+.work-pattern-setting .table-wrapper {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
@@ -43,12 +42,12 @@
     margin-bottom: 32px;
 }
 
-.attendance-type-setting table {
+.work-pattern-setting table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.attendance-type-setting table th {
+.work-pattern-setting table th {
     background: #e8e8e8;
     padding: 12px 16px;
     text-align: left;
@@ -57,23 +56,14 @@
     border-bottom: 2px solid #ccc;
 }
 
-.attendance-type-setting table td {
+.work-pattern-setting table td {
     padding: 12px 16px;
     border-bottom: 1px solid #f0f0f0;
     font-size: 15px;
     vertical-align: middle;
 }
 
-.attendance-type-setting .color-badge {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    margin-right: 8px;
-    vertical-align: middle;
-}
-
-.attendance-type-setting .btn-delete {
+.work-pattern-setting .btn-delete {
     background: #e57373;
     color: #fff;
     border: none;
@@ -83,73 +73,66 @@
     font-size: 13px;
 }
 
-.attendance-type-setting .btn-delete:hover {
+.work-pattern-setting .btn-delete:hover {
     background: #ef9a9a;
 }
 
-/* 新規追加フォーム */
-.attendance-type-setting .add-form-wrapper {
+.work-pattern-setting .add-form-wrapper {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     padding: 24px;
 }
 
-.attendance-type-setting .add-form-wrapper .form-title {
+.work-pattern-setting .form-title {
     font-size: 15px;
     font-weight: bold;
     color: #1a1f36;
     margin-bottom: 16px;
 }
 
-.attendance-type-setting .form-row {
+.work-pattern-setting .form-row {
     display: flex;
     align-items: flex-end;
     gap: 16px;
     flex-wrap: wrap;
 }
 
-.attendance-type-setting .form-group label {
+.work-pattern-setting .form-group label {
     display: block;
     font-size: 13px;
     color: #555;
     margin-bottom: 4px;
 }
 
-.attendance-type-setting .form-input {
+.work-pattern-setting .form-input {
     padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 15px;
-    width: 180px;
+    width: 160px;
     color: #1a1f36;
 }
 
-.attendance-type-setting .form-input-color {
-    width: 60px;
-    height: 36px;
+.work-pattern-setting .form-input-time {
+    padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    padding: 2px;
-    cursor: pointer;
-}
-
-.attendance-type-setting .form-check-group {
-    display: flex;
-    gap: 12px;
-    padding-bottom: 4px;
-}
-
-.attendance-type-setting .check-label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    cursor: pointer;
+    font-size: 15px;
+    width: 120px;
     color: #1a1f36;
 }
 
-.attendance-type-setting .btn-submit {
+.work-pattern-setting .form-input-number {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    width: 80px;
+    color: #1a1f36;
+}
+
+.work-pattern-setting .btn-submit {
     display: inline-block;
     padding: 8px 24px;
     background-color: #1a1f36;
@@ -160,6 +143,6 @@
     cursor: pointer;
 }
 
-.attendance-type-setting .btn-submit:hover {
+.work-pattern-setting .btn-submit:hover {
     background-color: #2e3560;
 }

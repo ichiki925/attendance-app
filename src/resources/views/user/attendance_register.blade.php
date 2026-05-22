@@ -33,11 +33,26 @@
                     <label for="attendance_type_id">勤怠区分</label>
                     <select name="attendance_type_id" id="attendance_type_id">
                         @foreach($attendanceTypes as $type)
-                            <option value="{{ $type->id }}">
-                                {{ $type->name }}
+                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="pattern-select">
+                    <label for="work_pattern_id">勤務パターン</label>
+                    <select id="work_pattern_id">
+                        <option value="">-- 選択してください --</option>
+                        @foreach($workPatterns as $pattern)
+                            <option value="{{ $pattern->id }}"
+                                data-start="{{ \Carbon\Carbon::parse($pattern->start_time)->format('H:i') }}"
+                                data-end="{{ \Carbon\Carbon::parse($pattern->end_time)->format('H:i') }}"
+                                data-break="{{ $pattern->break_minutes }}">
+                                {{ $pattern->name }}
                             </option>
                         @endforeach
                     </select>
+                </div>
+                <div class="pattern-info" id="patternInfo" style="display:none;">
+                    <p>本日の予定：<span id="patternDetail"></span></p>
                 </div>
                 <button type="submit">出勤</button>
             </form>
@@ -63,4 +78,23 @@
         @endif
     </div>
 </div>
+@endsection
+@section('scripts')
+<script>
+    document.getElementById('work_pattern_id').addEventListener('change', function() {
+        const selected = this.options[this.selectedIndex];
+        const info = document.getElementById('patternInfo');
+        const detail = document.getElementById('patternDetail');
+
+        if (this.value) {
+            const start = selected.dataset.start;
+            const end = selected.dataset.end;
+            const breakMin = selected.dataset.break;
+            detail.textContent = start + '〜' + end + '（休憩' + breakMin + '分）';
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    });
+</script>
 @endsection

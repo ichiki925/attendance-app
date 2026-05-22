@@ -23,8 +23,9 @@ class UserController extends Controller
 
         $status = $attendance ? $attendance->status : 'off_duty';
         $attendanceTypes = \App\Models\AttendanceType::all();
+        $workPatterns = \App\Models\WorkPattern::all();
 
-        return view('user.attendance_register', compact('status', 'attendanceTypes'));
+        return view('user.attendance_register', compact('status', 'attendanceTypes', 'workPatterns'));
     }
 
     public function storeAttendance(Request $request)
