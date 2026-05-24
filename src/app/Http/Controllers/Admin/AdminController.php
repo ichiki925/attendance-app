@@ -20,7 +20,6 @@ class AdminController extends Controller
     {
         $selectedDate = $request->query('date', now()->toDateString());
 
-
         $attendances = Attendance::where('date', $selectedDate)
             ->whereHas('user', function ($query) {
                 $query->where('role', '!=', 'admin');
@@ -34,10 +33,18 @@ class AdminController extends Controller
             ->map(function ($attendance) {
                 $attendance->calculateTimes();
                 return $attendance;
-        });
+            });
 
+        // 追加：締め日ごとの集計
+        $summaryService = new \App\Services\AttendanceSummaryService();
+        $periodParam = $request->query('period', now()->format('Y-m'));
+        $period = $summaryService->getCurrentPeriod($periodParam);
+        $summaries = $summaryService->summarizeAllStaff($period['start'], $period['end']);
 
-        return view('admin.attendance_list', compact('attendances', 'selectedDate'));
+        return view('admin.attendance_list', compact(
+            'attendances', 'selectedDate',
+            'summaries', 'period', 'periodParam'
+        ));
     }
 
     public function showAttendanceDetail($id)
