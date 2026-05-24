@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AttendanceRequestNotification;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\AttendanceRequest as AttendanceRequestModel;
@@ -265,6 +267,12 @@ class UserController extends Controller
                     ]);
                 }
             }
+        }
+
+        // 管理者にメール通知
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new AttendanceRequestNotification($application));
         }
 
         return redirect()->route('applications.index', ['status' => 'pending']);

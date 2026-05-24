@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AttendanceApprovedNotification;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use App\Models\User;
@@ -278,6 +280,9 @@ class AdminController extends Controller
             'request_status' => 'approved',
         ]);
 
+        // 申請者本人にメール通知
+        Mail::to($application->user->email)->send(new AttendanceApprovedNotification($application));
+
         return redirect()->route('admin.applications.index')->with('success', '申請を承認しました。');
     }
 
@@ -412,6 +417,16 @@ class AdminController extends Controller
 
         return redirect()->route('admin.leader_setting.index')
             ->with('success', 'シークレット番号を更新しました。');
+    }
+
+    public function summaryIndex(Request $request)
+    {
+        $summaryService = new \App\Services\AttendanceSummaryService();
+        $periodParam = $request->query('period', now()->format('Y-m'));
+        $period = $summaryService->getCurrentPeriod($periodParam);
+        $summaries = $summaryService->summarizeAllStaff($period['start'], $period['end']);
+
+        return view('admin.summary', compact('summaries', 'period', 'periodParam'));
     }
 
 }
