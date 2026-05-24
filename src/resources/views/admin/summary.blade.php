@@ -4,6 +4,7 @@
 
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin/attendance_list.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/summary.css') }}">
 @endsection
 
 @section('content')
@@ -14,9 +15,9 @@
     </div>
 
     <div class="date-nav">
-        <a href="{{ route('admin.summary.index', ['period' => $period['prev']]) }}" class="prev">← 前期間</a>
+        <a href="{{ route('admin.summary', ['period' => $period['prev']]) }}" class="prev">← 前期間</a>
         <span class="current-date">{{ $period['label'] }}</span>
-        <a href="{{ route('admin.summary.index', ['period' => $period['next']]) }}" class="next">次期間 →</a>
+        <a href="{{ route('admin.summary', ['period' => $period['next']]) }}" class="next">次期間 →</a>
     </div>
 
     <div class="table-container">

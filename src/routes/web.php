@@ -78,7 +78,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::delete('/attendance-type/{id}', [AdminController::class, 'attendanceTypeDestroy'])->name('attendance_type.destroy');
     Route::get('/leader-setting', [AdminController::class, 'leaderSettingIndex'])->name('leader_setting.index');
     Route::post('/leader-setting', [AdminController::class, 'leaderSettingUpdate'])->name('leader_setting.update');
-    Route::get('/admin/summary', [AdminController::class, 'summaryIndex'])->name('admin.summary.index');
+    Route::get('/summary', [AdminController::class, 'summaryIndex'])->name('summary');
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });
