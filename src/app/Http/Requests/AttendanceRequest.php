@@ -16,6 +16,8 @@ class AttendanceRequest extends FormRequest
     public function rules()
     {
         return [
+            'user_id' => ['sometimes', 'required', 'exists:users,id'],
+            'date'    => ['sometimes', 'required', 'date'],
             'start_time' => ['required', 'date_format:H:i', 'before:end_time'],
             'end_time' => ['nullable', 'date_format:H:i', 'after:start_time'],
             'breaks' => ['nullable', 'array'],
@@ -32,6 +34,10 @@ class AttendanceRequest extends FormRequest
     public function messages()
     {
         return [
+            'user_id.required' => 'スタッフを選択してください',
+            'user_id.exists'   => '存在しないスタッフです',
+            'date.required'    => '日付を入力してください',
+            'date.date'        => '日付の形式が不正です',
             'start_time.required' => '出勤時間もしくは退勤時間が不適切な値です',
             'start_time.before' => '出勤時間もしくは退勤時間が不適切な値です',
             'end_time.after' => '出勤時間もしくは退勤時間が不適切な値です',

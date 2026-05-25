@@ -436,4 +436,50 @@ class AdminController extends Controller
         return view('admin.summary', compact('summaries', 'period', 'periodParam'));
     }
 
+    public function proxyCreate()
+    {
+        $staffs = User::where('role', '!=', 'admin')->get();
+        return view('admin.proxy_attendance', compact('staffs'));
+    }
+
+    public function proxyStore(AttendanceRequest $request)
+    {
+        $validated = $request->validated();
+
+        $attendance = Attendance::create([
+            'user_id'    => $request->user_id,
+            'date'       => $request->date,
+            'start_time' => $validated['start_time'],
+            'end_time'   => $validated['end_time'] ?? null,
+            'remarks'    => $validated['remarks'] ?? null,
+        ]);
+
+        if (!empty($validated['breaks'])) {
+            foreach ($validated['breaks'] as $break) {
+                if (!empty($break['break_start']) && !empty($break['break_end'])) {
+                    $breakStart = Carbon::parse($break['break_start']);
+                    $breakEnd   = Carbon::parse($break['break_end']);
+                    $breakDurationMinutes = ceil($breakStart->diffInSeconds($breakEnd) / 60);
+                    $breakHours   = floor($breakDurationMinutes / 60);
+                    $breakMinutes = $breakDurationMinutes % 60;
+
+                    BreakTime::create([
+                        'attendance_id' => $attendance->id,
+                        'break_start'   => $breakStart->format('H:i'),
+                        'break_end'     => $breakEnd->format('H:i'),
+                        'break_time'    => sprintf('%02d:%02d', $breakHours, $breakMinutes),
+                    ]);
+                }
+            }
+        }
+
+        // calculateTimesを呼んで合計・残業等を計算・保存
+        $attendance->load('breaks');
+        $attendance->calculateTimes();
+        $attendance->save();
+
+        return redirect()->route('admin.proxy.create')
+            ->with('success', '代理入力が完了しました。');
+    }
+
 }

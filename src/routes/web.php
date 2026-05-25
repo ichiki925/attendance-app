@@ -79,6 +79,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/leader-setting', [AdminController::class, 'leaderSettingIndex'])->name('leader_setting.index');
     Route::post('/leader-setting', [AdminController::class, 'leaderSettingUpdate'])->name('leader_setting.update');
     Route::get('/summary', [AdminController::class, 'summaryIndex'])->name('summary');
+    Route::get('/proxy-input', [AdminController::class, 'proxyCreate'])->name('proxy.create');
+    Route::post('/proxy-input', [AdminController::class, 'proxyStore'])->name('proxy.store');
 
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 });

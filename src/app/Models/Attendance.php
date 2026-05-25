@@ -25,6 +25,7 @@ class Attendance extends Model
         'start_time',
         'end_time',
         'total_time',
+        'total_break_time',
         'work_minutes',
         'overtime_minutes',
         'late_night_minutes',
@@ -106,6 +107,11 @@ class Attendance extends Model
         // total_timeを文字列で保存
         $hours = floor($workMinutes / 60);
         $minutes = $workMinutes % 60;
+
+        $totalBreakMinutes = (int) floor($breakSeconds / 60);
+        $this->total_break_time = $totalBreakMinutes > 0
+            ? sprintf('%02d:%02d', floor($totalBreakMinutes / 60), $totalBreakMinutes % 60)
+            : null;
 
         $this->work_minutes = $workMinutes;
         $this->overtime_minutes = $overtimeMinutes;

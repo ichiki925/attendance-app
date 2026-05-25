@@ -24,6 +24,7 @@
                 <ul>
                     <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
                     <li><a href="{{ route('admin.summary') }}">締め日集計</a></li>
+                    <li><a href="{{ route('admin.proxy.create') }}">代理入力</a></li>
                     <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
                     <li><a href="{{ route('admin.applications.index') }}">申請一覧</a></li>
                     <li><a href="{{ route('admin.closing_day.index') }}">締め日設定</a></li>
