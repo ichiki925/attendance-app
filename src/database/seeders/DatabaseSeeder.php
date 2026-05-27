@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             UserSeeder::class,
+            ClosingDaySettingSeeder::class,
+            RoundingSettingSeeder::class,
             AttendanceTypeSeeder::class,
             WorkPatternSeeder::class,
             AttendanceSeeder::class,

@@ -37,15 +37,8 @@ class AdminController extends Controller
                 return $attendance;
             });
 
-        // 追加：締め日ごとの集計
-        $summaryService = new \App\Services\AttendanceSummaryService();
-        $periodParam = $request->query('period', now()->format('Y-m'));
-        $period = $summaryService->getCurrentPeriod($periodParam);
-        $summaries = $summaryService->summarizeAllStaff($period['start'], $period['end']);
-
         return view('admin.attendance_list', compact(
-            'attendances', 'selectedDate',
-            'summaries', 'period', 'periodParam'
+            'attendances', 'selectedDate'
         ));
     }
 
