@@ -27,11 +27,16 @@
                     <li><a href="{{ route('admin.proxy.create') }}">代理入力</a></li>
                     <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
                     <li><a href="{{ route('admin.applications.index') }}">申請一覧</a></li>
-                    <li><a href="{{ route('admin.closing_day.index') }}">締め日設定</a></li>
-                    <li><a href="{{ route('admin.rounding_setting.index') }}">丸め設定</a></li>
-                    <li><a href="{{ route('admin.work_pattern.index') }}">勤務パターン</a></li>
-                    <li><a href="{{ route('admin.leader_setting.index') }}">リーダー設定</a></li>
-                    <li><a href="{{ route('admin.attendance_type.index') }}">区分設定</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">⚙️ 設定 ▼</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ route('admin.closing_day.index') }}">締め日設定</a></li>
+                            <li><a href="{{ route('admin.rounding_setting.index') }}">丸め設定</a></li>
+                            <li><a href="{{ route('admin.work_pattern.index') }}">勤務パターン</a></li>
+                            <li><a href="{{ route('admin.leader_setting.index') }}">リーダー設定</a></li>
+                            <li><a href="{{ route('admin.attendance_type.index') }}">区分設定</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <form id="logout-form" action="{{ url('/admin/logout') }}" method="POST" style="display: inline;">
                             @csrf

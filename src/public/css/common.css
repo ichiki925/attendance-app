@@ -88,6 +88,46 @@ nav ul li .logout-button:hover {
     color: #aaa;
 }
 
+/* ドロップダウンメニュー */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #1a1f36;
+    border: 1px solid #2d3561;
+    border-radius: 6px;
+    min-width: 150px;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 0;
+    padding: 4px 0;
+}
+
+.dropdown-menu li {
+    display: block;
+    width: 100%;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 8px 16px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #2d3561;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: flex;
+}
+
 @media (min-width: 768px) and (max-width: 850px) {
     nav ul {
         display: flex;
