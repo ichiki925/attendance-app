@@ -9,9 +9,15 @@
 
 @section('content')
 <div class="attendance_list">
+    @if(session('success'))
+        <div style="background:#d4edda;color:#155724;padding:12px 20px;border-radius:6px;margin-bottom:16px;border:1px solid #c3e6cb;">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="header">
         <div class="vertical-line"></div>
         <h1 class="title">{{ $staff->name }}さんの勤怠</h1>
+        <span class="hourly-wage-badge">時給：{{ number_format($staff->hourly_wage) }}円</span>
     </div>
     <div class="month-nav">
         <a href="{{ route('admin.staff.attendance.list', ['id' => $staff->id, 'period' => $prevPeriod, 'mode' => $mode]) }}" class="prev">← 前</a>
@@ -87,7 +93,18 @@
     </div>
 
     <div class="export-btn-container">
-        <form method="GET" action="{{ route('admin.staff.attendance.export', ['id' => $staff->id, 'month' => $currentMonth]) }}">
+        <form method="POST" action="{{ route('admin.staff.attendance.sendInvoice', ['id' => $staff->id]) }}" style="display:inline;">
+            @csrf
+            <input type="hidden" name="period" value="{{ $periodParam }}">
+            <input type="hidden" name="mode" value="{{ $mode }}">
+            <button type="submit" class="export-btn" style="background-color:#2d6a4f;margin-right:8px;">請求書メール送信</button>
+        </form>
+        <form method="GET" action="{{ route('admin.staff.attendance.exportPdf', ['id' => $staff->id]) }}" style="display:inline;">
+            <input type="hidden" name="period" value="{{ $periodParam }}">
+            <input type="hidden" name="mode" value="{{ $mode }}">
+            <button type="submit" class="export-btn" style="background-color:#1a1f36;margin-right:8px;">PDF出力</button>
+        </form>
+        <form method="GET" action="{{ route('admin.staff.attendance.export', ['id' => $staff->id, 'month' => $currentMonth]) }}" style="display:inline;">
             <select name="format" id="csvFormat" class="hidden-select">
                 <option value="utf8" selected>UTF-8</option>
                 <option value="sjis">Shift-JIS</option>

@@ -60,9 +60,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('attendance.detail');
     Route::put('/attendance/{id}', [AdminController::class, 'updateAttendance'])->name('attendance.update');
     Route::get('/staff/list', [AdminController::class, 'staffIndex'])->name('staff.list');
+    Route::patch('/staff/{id}/wage', [AdminController::class, 'updateStaffWage'])->name('staff.updateWage');
     Route::get('/attendance/staff/{id}', [AdminController::class, 'staffAttendanceIndex'])->name('staff.attendance.list');
     Route::get('/attendance/staff/{id}/export', [AdminController::class, 'exportAttendance'])
     ->name('staff.attendance.export');
+    Route::get('/attendance/staff/{id}/export-pdf', [AdminController::class, 'exportPdf'])->name('staff.attendance.exportPdf');
+    Route::post('/attendance/staff/{id}/send-invoice', [AdminController::class, 'sendInvoiceMail'])->name('staff.attendance.sendInvoice');
     Route::get('/stamp_correction_request/list', [AdminController::class, 'applicationIndex'])->name('applications.index');
     Route::get('/application/{id}', [AdminController::class, 'showApplicationDetail'])->name('application.detail');
     Route::post('/application/approve/{id}', [AdminController::class, 'approve'])->name('application.approve');

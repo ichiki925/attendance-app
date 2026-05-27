@@ -107,6 +107,19 @@ class AdminController extends Controller
         return view('admin.staff_list', compact('staffs'));
     }
 
+    public function updateStaffWage(Request $request, $id)
+    {
+        $request->validate([
+            'hourly_wage' => 'required|integer|min:0|max:9999999',
+        ]);
+
+        $staff = User::where('role', '!=', 'admin')->findOrFail($id);
+        $staff->hourly_wage = $request->hourly_wage;
+        $staff->save();
+
+        return redirect()->route('admin.staff.list')->with('success', '時給を更新しました。');
+    }
+
     public function staffAttendanceIndex(Request $request, $id)
     {
         $staff = User::where('role', '!=', 'admin')->findOrFail($id);
@@ -226,6 +239,132 @@ class AdminController extends Controller
             "Content-Type" => $contentType,
             "Content-Disposition" => "attachment; filename=\"$fileName\"",
         ]);
+    }
+
+    public function exportPdf($id, Request $request)
+    {
+        $period = $request->query('period', Carbon::now()->format('Y-m'));
+        $mode = $request->query('mode', 'closing');
+
+        $staff = User::where('role', '!=', 'admin')->findOrFail($id);
+
+        $closing = \App\Models\ClosingDaySetting::getActive();
+        $closingDay = $closing->closing_day;
+        $base = Carbon::parse($period);
+
+        if ($mode === 'calendar') {
+            $startDate = $base->copy()->startOfMonth();
+            $endDate   = $base->copy()->endOfMonth();
+        } else {
+            if ($closingDay === 31) {
+                $startDate = $base->copy()->startOfMonth();
+                $endDate   = $base->copy()->endOfMonth();
+            } else {
+                $startDate = $base->copy()->subMonth()->day($closingDay)->addDay()->startOfDay();
+                $endDate   = $base->copy()->day($closingDay)->startOfDay();
+            }
+        }
+
+        $attendances = Attendance::where('user_id', $staff->id)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->with('breaks')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->map(function ($attendance) {
+                $attendance->calculateTimes();
+                return $attendance;
+            });
+
+        // 合計時間（分）を計算
+        $totalMinutes = 0;
+        foreach ($attendances as $attendance) {
+            if ($attendance->total_time) {
+                [$h, $m] = explode(':', $attendance->total_time);
+                $totalMinutes += (int)$h * 60 + (int)$m;
+            }
+        }
+        $totalHours = $totalMinutes / 60;
+        $totalTime = sprintf('%d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
+        $totalAmount = (int)round($totalHours * $staff->hourly_wage);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.pdf.attendance_pdf', [
+            'staff'       => $staff,
+            'attendances' => $attendances,
+            'startDate'   => $startDate->format('Y/m/d'),
+            'endDate'     => $endDate->format('Y/m/d'),
+            'totalTime'   => $totalTime,
+            'totalAmount' => $totalAmount,
+        ]);
+
+        return $pdf->download("attendance_{$staff->name}_{$period}.pdf");
+    }
+
+    public function sendInvoiceMail(Request $request, $id)
+    {
+        $period = $request->query('period', Carbon::now()->format('Y-m'));
+        $mode = $request->query('mode', 'closing');
+
+        $staff = User::where('role', '!=', 'admin')->findOrFail($id);
+
+        $closing = \App\Models\ClosingDaySetting::getActive();
+        $closingDay = $closing->closing_day;
+        $base = Carbon::parse($period);
+
+        if ($mode === 'calendar') {
+            $startDate = $base->copy()->startOfMonth();
+            $endDate   = $base->copy()->endOfMonth();
+        } else {
+            if ($closingDay === 31) {
+                $startDate = $base->copy()->startOfMonth();
+                $endDate   = $base->copy()->endOfMonth();
+            } else {
+                $startDate = $base->copy()->subMonth()->day($closingDay)->addDay()->startOfDay();
+                $endDate   = $base->copy()->day($closingDay)->startOfDay();
+            }
+        }
+
+        $attendances = Attendance::where('user_id', $staff->id)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->with('breaks')
+            ->orderBy('date', 'asc')
+            ->get()
+            ->map(function ($attendance) {
+                $attendance->calculateTimes();
+                return $attendance;
+            });
+
+        $totalMinutes = 0;
+        foreach ($attendances as $attendance) {
+            if ($attendance->total_time) {
+                [$h, $m] = explode(':', $attendance->total_time);
+                $totalMinutes += (int)$h * 60 + (int)$m;
+            }
+        }
+        $totalHours = $totalMinutes / 60;
+        $totalTime = sprintf('%d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
+        $totalAmount = (int)round($totalHours * $staff->hourly_wage);
+
+        $pdf = app('dompdf.wrapper')->loadView('admin.pdf.attendance_pdf', [
+            'staff'       => $staff,
+            'attendances' => $attendances,
+            'startDate'   => $startDate->format('Y/m/d'),
+            'endDate'     => $endDate->format('Y/m/d'),
+            'totalTime'   => $totalTime,
+            'totalAmount' => $totalAmount,
+        ]);
+
+        $pdfContent = $pdf->output();
+
+        Mail::to($staff->email)->send(new \App\Mail\InvoiceMail(
+            $staff,
+            $startDate->format('Y/m/d'),
+            $endDate->format('Y/m/d'),
+            $totalTime,
+            $totalAmount,
+            $pdfContent
+        ));
+
+        return redirect()->back()->with('success', '請求書メールを送信しました。');
     }
 
     public function applicationIndex(Request $request)
