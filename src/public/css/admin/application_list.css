@@ -92,3 +92,30 @@
 .detail-link:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+    .application-list {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .application-table {
+        min-width: 400px;
+        font-size: 12px;
+    }
+
+    .application-table th,
+    .application-table td {
+        padding: 8px 10px;
+        white-space: nowrap;
+    }
+
+    .application-table th:first-child {
+        padding-left: 10px;
+    }
+}

@@ -19,7 +19,10 @@
                 </span>
                 <span class="logo-text">Attend<span class="logo-accent">Track</span></span>
             </div>
-            <nav>
+            <button class="hamburger" id="hamburger" aria-label="メニュー">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="nav-menu">
                 @if (Auth::check() && Auth::user()->role === 'admin')
                 <ul>
                     <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
@@ -48,10 +51,15 @@
             </nav>
         </div>
     </header>
-
     <main>
         @yield('content')
     </main>
     @yield('scripts')
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function() {
+            document.getElementById('nav-menu').classList.toggle('open');
+            this.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>

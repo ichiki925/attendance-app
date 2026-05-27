@@ -151,14 +151,44 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     white-space: nowrap;
 }
 
-@media (min-width:768px) and (max-width:850px) {
-
+@media (max-width: 768px) {
     .attendance-detail {
-        max-width: 70%;
+        max-width: 95%;
         margin: 0 auto;
     }
 
+    .header {
+        margin: 20px 0;
+    }
+
+    .detail-table th {
+        padding-left: 10px;
+        width: 25%;
+    }
+
+    .detail-table th,
+    .detail-table td {
+        padding: 12px 8px;
+    }
+
+    .detail-table .value {
+        gap: 10px;
+    }
+
+    .date-year {
+        padding-left: 0;
+        padding-right: 10px;
+    }
+
+    .detail-table input[type="time"] {
+        width: 70px;
+    }
+
     .detail-table textarea {
-        width: 80%;
-        }
+        width: 100%;
+    }
+
+    .edit-button {
+        margin-top: 30px;
+    }
 }

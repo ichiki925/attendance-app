@@ -126,3 +126,26 @@
     opacity: 0;
     pointer-events: none;
 }
+
+@media (max-width: 768px) {
+    .attendance_list {
+        margin: 20px auto;
+        padding: 10px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .attendance-table {
+        font-size: 11px;
+        min-width: 550px;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+        padding: 6px 4px;
+        white-space: nowrap;
+    }
+}

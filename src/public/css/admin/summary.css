@@ -30,3 +30,32 @@
 .summary-table td {
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .attendance-table.summary-table {
+        min-width: unset;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .attendance-table.summary-table th:first-child,
+    .attendance-table.summary-table td:first-child {
+        width: 20%;
+        text-align: center;
+        padding: 6px 4px;
+    }
+
+    .attendance-table.summary-table th,
+    .attendance-table.summary-table td {
+        padding: 6px 2px;
+        font-size: 10px;
+        word-break: break-all;
+        white-space: normal;
+    }
+
+    .badge {
+        font-size: 9px;
+        padding: 1px 2px;
+        white-space: nowrap;
+    }
+}

@@ -128,15 +128,86 @@ nav ul li .logout-button:hover {
     display: flex;
 }
 
-@media (min-width: 768px) and (max-width: 850px) {
-    nav ul {
+/* ハンバーガーメニュー */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.hamburger span {
+    display: block;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
         display: flex;
-        gap: 10px;
-        padding: 0;
-        margin: 0;
     }
-    nav ul li a,
-    nav ul li .logout-button {
-        font-size: 14px;
+
+    #nav-menu {
+        display: none;
+        position: absolute;
+        top: 56px;
+        left: 0;
+        right: 0;
+        background-color: #1a1f36;
+        z-index: 1000;
+        padding: 10px 0;
+    }
+
+    #nav-menu.open {
+        display: block;
+    }
+
+    #nav-menu ul {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    #nav-menu ul li {
+        display: block;
+        width: 100%;
+    }
+
+    #nav-menu ul li a,
+    #nav-menu ul li .logout-button {
+        display: block;
+        padding: 12px 20px;
+        font-size: 15px;
+        width: 100%;
+        text-align: left;
+    }
+
+    .dropdown-menu {
+        position: static;
+        border: none;
+        border-radius: 0;
+        display: block !important;
+    }
+
+    .dropdown>.dropdown-toggle {
+        display: none !important;
     }
 }

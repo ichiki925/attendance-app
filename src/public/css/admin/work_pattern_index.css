@@ -146,3 +146,40 @@
 .work-pattern-setting .btn-submit:hover {
     background-color: #2e3560;
 }
+
+@media (max-width: 768px) {
+    .work-pattern-setting {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+
+    .work-pattern-setting .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .work-pattern-setting table {
+        min-width: 400px;
+        font-size: 12px;
+    }
+
+    .work-pattern-setting table th,
+    .work-pattern-setting table td {
+        padding: 8px 10px;
+        white-space: nowrap;
+    }
+
+    .work-pattern-setting .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .work-pattern-setting .form-input {
+        width: 100%;
+    }
+
+    .work-pattern-setting .form-input-time,
+    .work-pattern-setting .form-input-number {
+        width: 120px;
+    }
+}
